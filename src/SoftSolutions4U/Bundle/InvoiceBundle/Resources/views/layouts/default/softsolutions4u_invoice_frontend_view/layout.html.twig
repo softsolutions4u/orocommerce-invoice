@@ -1,0 +1,270 @@
+{# Invoice view page (storefront). #}
+
+{# Breadcrumbs #}
+
+{% block _invoice_breadcrumbs_widget %}
+    <nav aria-label="{{ 'softsolutions4u.invoice.frontend.breadcrumbs.label'|trans }}" class="invoice-breadcrumbs">
+        <ol class="breadcrumbs scrollable-container invisible-scrollbar scroll-shadow-initialized">
+            <li class="breadcrumbs__item">
+                <a href="/" class="breadcrumbs__link">{{ 'softsolutions4u.invoice.frontend.breadcrumbs.home.label'|trans }}</a>
+                <span aria-hidden="true" class="breadcrumbs-separator">
+                    <svg class="theme-icon theme-icon--small" role="none" aria-hidden="true">
+                        <use href="/build/default/svg-icons/theme-icons.svg#chevron-right"></use>
+                    </svg>
+                </span>
+            </li>
+            <li class="breadcrumbs__item">
+                <a href="/customer/user/dashboard/" class="breadcrumbs__link">{{ 'softsolutions4u.invoice.frontend.breadcrumbs.my_account.label'|trans }}</a>
+                <span aria-hidden="true" class="breadcrumbs-separator">
+                    <svg class="theme-icon theme-icon--small" role="none" aria-hidden="true">
+                        <use href="/build/default/svg-icons/theme-icons.svg#chevron-right"></use>
+                    </svg>
+                </span>
+            </li>
+            <li class="breadcrumbs__item">
+                <a href="{{ path('softsolutions4u_invoice_frontend_index') }}" class="breadcrumbs__link">{{ 'softsolutions4u.invoice.entity_plural_label'|trans }}</a>
+                <span aria-hidden="true" class="breadcrumbs-separator">
+                    <svg class="theme-icon theme-icon--small" role="none" aria-hidden="true">
+                        <use href="/build/default/svg-icons/theme-icons.svg#chevron-right"></use>
+                    </svg>
+                </span>
+            </li>
+            <li class="breadcrumbs__item">
+                <a href="#" class="breadcrumbs__link" aria-current="location">{{ 'softsolutions4u.invoice.frontend.breadcrumbs.view.label'|trans }}</a>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{# Header: [back-icon] [title] #}
+
+{% block _invoice_page_header_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' page-title page-title--has-actions page-title-wrapper customer-page-title-wrapper'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_payment_page_title_widget %}
+    <h1 class="invoice-page-title">{{ block_widget(block)|trans }}</h1>
+{% endblock %}
+
+
+{% block _invoice_header_left_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-header-left'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_back_link_widget %}
+    {% import '@OroUI/layouts/macros.html.twig' as LayoutUI %}
+    {{ LayoutUI.link({
+        path: path(route_name, route_parameters|default({})),
+        aCss: attr.class|default('btn btn--neutral hide-on-print'),
+        icon: 'arrow-left',
+        labelClass: labelClass|default('sr-only'),
+        label: text|trans
+    }) }}
+{% endblock %}
+
+{% block _invoice_page_title_widget %}
+    <h1 class="invoice-page-title">
+        {{ 'softsolutions4u.invoice.frontend.invoice.identifier.label'|trans({'%identifier%': block_widget(block)}) }}
+    </h1>
+{% endblock %}
+
+{% block _invoice_page_status_widget %}
+    {% import '@OroUI/layouts/renderStatus.html.twig' as renderStatus %}
+    {% set map = {
+        'draft': '',
+        'posted': 'info',
+        'open': 'info',
+        'overdue': 'danger',
+        'paid': 'success',
+        'partially_paid': 'warning',
+        'cancelled': ''
+    } %}
+    {% set status = text|default('') %}
+    {{ renderStatus.status({
+        label: status|replace({'_': ' '})|capitalize,
+        code: status,
+        map: map
+    }) }}
+    {% if status == 'overdue' and due_date is defined and due_date %}
+        <span class="invoice-due-note">({{ due_date|commerce_datetime_since }})</span>
+    {% endif %}
+{% endblock %}
+
+{% block _invoice_page_actions_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' page-title-actions'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_download_link_widget %}
+    {% import '@OroUI/layouts/macros.html.twig' as LayoutUI %}
+    {{ LayoutUI.link({
+        path: path(route_name, route_parameters|default({})),
+        aCss: 'btn hide-on-print btn--flat',
+        icon: 'download',
+        label: text|trans
+    }) }}
+{% endblock %}
+
+{% block _invoice_pay_link_widget %}
+    {% import '@OroUI/layouts/macros.html.twig' as LayoutUI %}
+    {{ LayoutUI.link({
+        path: path(route_name, route_parameters|default({})),
+        aCss: 'btn hide-on-print btn--flat btn--primary',
+        icon: 'credit-card',
+        label: text|trans
+    }) }}
+{% endblock %}
+
+{# Address rows #}
+
+{# Payment method / payment status #}
+
+{% block _invoice_payment_method_widget %}
+    {% set text %}
+        {{ text ? get_payment_method_label(text) : 'softsolutions4u.invoice.ui.not_available'|trans }}
+    {% endset %}
+    {{- parent_block_widget(block) -}}
+{% endblock %}
+
+{% block _invoice_payment_status_widget %}
+    {% set text %}
+        {{ text ? get_payment_status_label(text) : 'softsolutions4u.invoice.ui.not_available'|trans }}
+    {% endset %}
+    {{- parent_block_widget(block) -}}
+{% endblock %}
+
+{% block _invoice_ship_to_widget %}
+    {% set text %}
+        {% if lines is defined and lines|length %}
+            <span class="invoice-address">
+                {% for line in lines %}
+                    <span class="invoice-address-line">{{ line }}</span>
+                {% endfor %}
+            </span>
+        {% else %}
+            {{ 'oro.ui.empty'|trans }}
+        {% endif %}
+    {% endset %}
+    {{- parent_block_widget(block) -}}
+{% endblock %}
+
+{% block _invoice_bill_to_widget %}
+    {% set text %}
+        {% if lines is defined and lines|length %}
+            <span class="invoice-address">
+                {% for line in lines %}
+                    <span class="invoice-address-line">{{ line }}</span>
+                {% endfor %}
+            </span>
+        {% else %}
+            {{ 'oro.ui.empty'|trans }}
+        {% endif %}
+    {% endset %}
+    {{- parent_block_widget(block) -}}
+{% endblock %}
+
+{# currency_widget / date_widget #}
+
+{% block currency_widget %}
+    {{ value|oro_format_currency({currency: currency, attributes: attributes, textAttributes: textAttributes, symbols: symbols, locale: locale}) }}
+{% endblock %}
+
+{% block date_widget %}
+    {{ date|oro_format_date({dateType: dateType, locale: locale, timeZone: timeZone}) }}
+{% endblock %}
+
+{# Top row: address details #}
+
+{% block _invoice_top_columns_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-top-columns'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_top_main_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-top-columns__main'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_top_sidebar_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-top-columns__sidebar'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_info_total_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-summary-box'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{# Line items grid #}
+
+{% block _invoice_line_items_head_widget %}
+    {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-line-items__head'}) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _invoice_line_items_title_widget %}
+    <h2 class="customer-line-items__title">
+        {{ block_widget(block) }}
+    </h2>
+{% endblock %}
+
+{# Line items grid #}
+{% block _invoice_line_items_body_widget %}
+    <div class="grid-container">
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+
+{# Totals #}
+
+{% block _invoice_totals_table_widget %}
+    <div class="summary-widget__inner">
+        <div class="summary-widget__summary">
+            <table class="summary-table">
+                <tbody>
+                    <tr>
+                        <th class="summary-table__summary" scope="row">{{ 'oro.pricing.frontend.summary'|trans }}</th>
+                        <td></td>
+                    </tr>
+                    {{ block_widget(block) }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block invoice_summary_row_widget %}
+    <tr>
+        <th scope="row">{{ label|trans }}</th>
+        <td>{{ block_widget(block) }}</td>
+    </tr>
+{% endblock %}
+
+{% block invoice_summary_total_row_widget %}
+    <tr aria-hidden="true" class="summary-table__presentation">
+        <td colspan="2"><hr class="summary-table__divider"></td>
+    </tr>
+    <tr class="summary-table__total-row">
+        <th class="summary-table__total" scope="row">{{ label|trans }}</th>
+        <td class="summary-table__total"><span class="summary-table__total-price">{{ block_widget(block) }}</span></td>
+    </tr>
+{% endblock %}

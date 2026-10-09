@@ -1,0 +1,42 @@
+{# Breadcrumbs for the invoice LIST #}
+
+{% block _invoice_index_breadcrumbs_widget %}
+    <nav aria-label="{{ 'softsolutions4u.invoice.frontend.breadcrumbs.label'|trans }}" class="invoice-breadcrumbs">
+        <ol class="breadcrumbs scrollable-container invisible-scrollbar scroll-shadow-initialized">
+            <li class="breadcrumbs__item">
+                <a href="/" class="breadcrumbs__link">{{ 'softsolutions4u.invoice.frontend.breadcrumbs.home.label'|trans }}</a>
+                <span aria-hidden="true" class="breadcrumbs-separator">
+                    <svg class="theme-icon theme-icon--small" role="none" aria-hidden="true">
+                        <use href="/build/default/svg-icons/theme-icons.svg#chevron-right"></use>
+                    </svg>
+                </span>
+            </li>
+            <li class="breadcrumbs__item">
+                <a href="/customer/user/dashboard/" class="breadcrumbs__link">{{ 'softsolutions4u.invoice.frontend.breadcrumbs.my_account.label'|trans }}</a>
+                <span aria-hidden="true" class="breadcrumbs-separator">
+                    <svg class="theme-icon theme-icon--small" role="none" aria-hidden="true">
+                        <use href="/build/default/svg-icons/theme-icons.svg#chevron-right"></use>
+                    </svg>
+                </span>
+            </li>
+            <li class="breadcrumbs__item">
+                <a href="{{ path('softsolutions4u_invoice_frontend_index') }}" class="breadcrumbs__link" aria-current="location">{{ 'softsolutions4u.invoice.entity_plural_label'|trans }}</a>
+            </li>
+        </ol>
+    </nav>
+{% endblock %}
+{% block _invoice_outstanding_title_widget %}
+    <h2 class="customer-line-items__title">{{ block_widget(block)|trans }}</h2>
+{% endblock %}
+
+{% block _invoice_paid_title_widget %}
+    <h2 class="customer-line-items__title invoice-paid-title">{{ block_widget(block)|trans }}</h2>
+{% endblock %}
+
+{% block _invoice_cancelled_title_widget %}
+    <h2 class="customer-line-items__title invoice-cancelled-title">{{ block_widget(block)|trans }}</h2>
+{% endblock %}
+
+{% block _invoice_empty_message_widget %}
+    <p class="invoice-empty-message">{{ block_widget(block)|trans }}</p>
+{% endblock %}

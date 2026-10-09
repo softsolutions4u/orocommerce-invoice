@@ -1,0 +1,68 @@
+{
+    "name": "softsolutions4u/orocommerce-invoice",
+    "description": "Invoice management for OroCommerce 7.0: create invoices from orders, PDF invoices, email notifications, bank-transfer details and storefront invoice payments.",
+    "type": "symfony-bundle",
+    "license": "GPL-3.0-only",
+    "keywords": [
+        "oro",
+        "orocommerce",
+        "invoice",
+        "invoicing",
+        "pdf",
+        "b2b",
+        "payment",
+        "symfony-bundle"
+    ],
+    "homepage": "https://www.softsolutions4u.com/",
+    "authors": [
+        {
+            "name": "Pradeep Elayaraja",
+            "role": "Developer"
+        },
+        {
+            "name": "Ganesh",
+            "role": "Tester"
+        },
+        {
+            "name": "SoftSolutions4U",
+            "homepage": "https://www.softsolutions4u.com/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/SoftSolutions4U/orocommerce-invoice/issues",
+        "source": "https://github.com/SoftSolutions4U/orocommerce-invoice",
+        "docs": "https://github.com/SoftSolutions4U/orocommerce-invoice#readme"
+    },
+    "require": {
+        "php": "~8.5.0",
+        "brick/math": "^0.11",
+        "dompdf/dompdf": "^3.0",
+        "oro/commerce": "7.0.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.6.0",
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SoftSolutions4U\\Bundle\\InvoiceBundle\\": "src/SoftSolutions4U/Bundle/InvoiceBundle/"
+        },
+        "exclude-from-classmap": [
+            "/src/SoftSolutions4U/Bundle/InvoiceBundle/Tests/"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "../../../bin/phpunit -c phpunit.xml",
+        "test-coverage": "php -d pcov.enabled=1 -d pcov.directory=src ../../../bin/phpunit -c phpunit.xml --coverage-text",
+        "cs": "phpcs --standard=phpcs.xml",
+        "cs-fix": "phpcbf --standard=phpcs.xml"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    }
+}

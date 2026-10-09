@@ -1,0 +1,45 @@
+layout:
+    imports:
+        -
+            id: datagrid
+            root: __root
+
+    actions:
+        - '@setBlockTheme':
+            themes: 'layout.html.twig'
+
+        - '@setOption':
+              id: __datagrid
+              optionName: grid_name
+              optionValue: frontend-softsolutions4u-invoices-grid
+
+        - '@setOption':
+              id: __datagrid
+              optionName: grid_render_parameters.gridViewsOptions.hideTitle
+              optionValue: '.page-title-wrapper'
+
+        - '@setOption':
+              id: __datagrid_toolbar_button_container
+              optionName: visible
+              optionValue: true
+
+        - '@setOption':
+              id: __datagrid
+              optionName: grid_render_parameters.themeOptions.itemscounter.transTemplate
+              optionValue: softsolutions4u.invoice.frontend.grid.pagination.totalRecordsShortPlural
+
+        - '@add':
+              id: __additional_views_container
+              parentId: __datagrid_views_toolbar
+              blockType: container
+
+        - '@add':
+              id: __button_container_create_payment
+              parentId: __additional_views_container
+              blockType: combined_buttons
+              options:
+                  buttons: '=data["buttons"].getAll()'
+        - '@appendOption':
+            id: __datagrid
+            optionName: grid_render_parameters.cssClass
+            optionValue: 'order-invoice-datagrid'

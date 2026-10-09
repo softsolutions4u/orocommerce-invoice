@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ 'softsolutions4u.invoice.entity_label'|trans }} {{ entity.invoiceNo }}</title>
+    <style>
+        /*
+         * Repeating header and footer.
+         * Dompdf draws position: fixed elements on every page, inside the page
+         * margins. The top margin reserves room for the header (logo, invoice
+         * details and Payable By) and the bottom margin for the footer, so page
+         * content never runs underneath them. The header has a fixed height and
+         * compact rows so its tallest case (every optional row plus a three-line
+         * payer) still fits the reserved space.
+         */
+        @page { margin: 248px 36px 58px 36px; }
+        .page-header { position: fixed; top: -220px; left: 0; right: 0; height: 208px; overflow: hidden; }
+        .page-footer { position: fixed; bottom: -34px; left: 0; right: 0; height: 18px;
+            border-top: 1px solid #e4e7ec; padding-top: 5px; font-size: 9.5px; color: #888; text-align: center; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #222; }
+        table { border-collapse: collapse; width: 100%; }
+        .header-table { margin: 0; }
+        .header-table td { vertical-align: top; }
+        .header-brand { width: 45%; }
+        .header-details { width: 55%; text-align: right; }
+        .company-logo { max-height: 60px; max-width: 220px; }
+        .company-name { font-size: 16px; font-weight: bold; margin: 0; }
+        .invoice-title { font-size: 20px; font-weight: bold; text-align: right; margin: 0 0 4px 0; line-height: 1.1; }
+        .invoice-meta { width: 100%; color: #222; }
+        .invoice-meta td { padding: 0; font-size: 11px; line-height: 1.3; }
+        .invoice-meta .label { width: 62%; padding-right: 14px; color: #777; text-align: right; }
+        .invoice-meta .value { text-align: right; white-space: nowrap; }
+        .payable-by { margin-top: 7px; padding-top: 5px; border-top: 1px solid #e4e7ec; text-align: right; }
+        .payable-by h4 { margin: 0 0 2px 0; font-size: 10px; text-transform: uppercase; color: #777; }
+        .payable-by p { margin: 0; font-size: 11px; line-height: 1.3; }
+        .payable-by__name { font-weight: bold; }
+        .address-table { margin-bottom: 20px; }
+        .address-table td { width: 50%; vertical-align: top; padding-right: 20px; }
+        .address-block h4 { margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase; color: #777; }
+        .address-block p { margin: 0; line-height: 1.4; }
+        /*
+         * Root cause of the misaligned Qty/Unit Price/etc. headers: the
+         * general `.line-items th { text-align: left; ... }` rule below has
+         * specificity (0,1,1) - one class + one element - which beats
+         * `.text-right { text-align: right; }` at (0,1,0). That meant every
+         * <th class="text-right"> (Qty, Unit Price, Tax, Total)
+         * was still forced left, while its <td class="text-right"> data
+         * cells (no competing element-level rule) rendered correctly on the
+         * right - hence the header/value gap in the screenshot. Scoping the
+         * left-align to only the first two header cells (SKU, Product)
+         * removes the conflict entirely instead of relying on !important.
+         */
+        .line-items { margin-top: 10px; margin-bottom: 20px; table-layout: fixed; }
+        .line-items th { background: #f2f2f2; padding: 6px 8px; font-size: 11px; text-transform: uppercase; color: #555; border-bottom: 1px solid #ddd; overflow: hidden; text-overflow: ellipsis; }
+        .line-items th:nth-child(1),
+        .line-items th:nth-child(2) { text-align: left; }
+        .line-items td { padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
+        .line-items td.qty-cell,
+        .line-items td.money-cell { white-space: nowrap; }
+        .text-right { text-align: right; }
+        .totals-table { width: 260px; margin-left: auto; }
+        .totals-table td { padding: 4px 0; }
+        .totals-table .totals-label { color: #555; }
+        .totals-table .grand-total td { border-top: 1px solid #333; font-weight: bold; padding-top: 8px; }
+        .memo { margin-top: 24px; padding-top: 12px; border-top: 1px solid #eee; color: #555; }
+
+        .payment-details { width: 100%; margin-top: 28px; border: 1px solid #d5dae1; background: #f7f8fa; }
+        .payment-details td { padding: 12px 14px; vertical-align: top; }
+        .payment-details__title { font-size: 11px; font-weight: bold; color: #1a1a1a; margin-bottom: 3px; }
+        .payment-details__intro { font-size: 10px; color: #555; margin-bottom: 9px; line-height: 1.5; }
+        .payment-details__grid { width: 100%; border-collapse: collapse; }
+        .payment-details__grid td { padding: 3px 0; font-size: 10px; border-bottom: 1px solid #e4e7ec; }
+        .payment-details__label { color: #555; width: 45%; }
+        .payment-details__value { color: #1a1a1a; text-align: right; }
+        .payment-details__value--strong { font-weight: bold; }
+
+        /*
+         * The payment box must never be split across pages (its header used to
+         * stay on page 1 while the bank details moved to page 2). Dompdf honours
+         * page-break-inside on block elements, so the table is wrapped in a div
+         * that carries the rule; the table and its rows repeat it so engines
+         * that only honour it on tables or rows behave the same. If the box does
+         * not fit in the space left, the whole box moves to the next page.
+         */
+        /* Payment instructions always start on a page of their own. */
+        .pay-page { page-break-before: always; break-before: page; }
+        .pay-keep-together { page-break-inside: avoid; break-inside: avoid; }
+        .pay { width: 100%; border-collapse: collapse; border: 1px solid #c9ced6;
+            page-break-inside: avoid; break-inside: avoid; }
+        .pay tr { page-break-inside: avoid; break-inside: avoid; }
+        .pay__head-row { page-break-after: avoid; break-after: avoid; }
+        .pay__head { background: #eef1f5; border-bottom: 1px solid #c9ced6; padding: 9px 14px; }
+        .pay__title { font-size: 11px; font-weight: bold; color: #1a1a1a; letter-spacing: .02em; }
+        .pay__due { float: right; font-size: 10px; color: #555; }
+        .pay__due b { font-size: 12px; color: #1a1a1a; margin-left: 6px; }
+        .pay__col { padding: 13px 14px; vertical-align: top; width: 50%; }
+        .pay__col--online { border-left: 1px solid #dde1e7; background: #fafbfc; }
+        .pay__label { font-size: 9px; font-weight: bold; color: #6b7280; letter-spacing: .06em;
+            text-transform: uppercase; margin-bottom: 6px; }
+        .pay__note { font-size: 9.5px; color: #555; line-height: 1.5; margin-bottom: 8px; }
+        .pay__rows { width: 100%; border-collapse: collapse; }
+        .pay__rows td { padding: 4px 0; font-size: 10px; border-bottom: 1px solid #e8ebef; }
+        .pay__k { color: #6b7280; width: 46%; }
+        .pay__v { color: #1a1a1a; text-align: right; }
+        .pay__v--ref { font-weight: bold; }
+        .pay__cta { display: inline-block; margin: 2px 0 8px; padding: 7px 15px; background: #1a6b6b;
+            color: #ffffff; font-size: 10px; font-weight: bold; border-radius: 3px;
+            text-decoration: none; }
+        .pay__url { font-size: 10px; color: #6b7280; word-break: break-all; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+{# Repeated on every page by Dompdf (position: fixed). Must come before the content. #}
+<div class="page-header">
+<table class="header-table">
+    <tr>
+        {# Left: brand only. #}
+        <td class="header-brand">
+            {% if companyLogoDataUri %}
+                <img class="company-logo" src="{{ companyLogoDataUri }}" alt="{{ companyName }}">
+            {% elseif companyName %}
+                <p class="company-name">{{ companyName }}</p>
+            {% endif %}
+        </td>
+        {# Right: every invoice detail, then who the invoice is payable by. #}
+        <td class="header-details">
+            <p class="invoice-title">{{ 'softsolutions4u.invoice.entity_label'|trans }}</p>
+            <table class="invoice-meta">
+                <tr class="invoice-no">
+                    <td class="label">{{ 'softsolutions4u.invoice.invoice_no.label'|trans }}</td>
+                    <td class="value">{{ entity.invoiceNo }}</td>
+                </tr>
+                <tr class="issue-date">
+                    <td class="label">{{ 'softsolutions4u.invoice.issue_date.label'|trans }}</td>
+                    <td class="value">{{ entity.issueDate ? entity.issueDate|oro_format_date({dateType: 'short'}) : '-' }}</td>
+                </tr>
+                <tr class="due-date">
+                    <td class="label">{{ 'softsolutions4u.invoice.due_date.label'|trans }}</td>
+                    <td class="value">{{ entity.dueDate ? entity.dueDate|oro_format_date({dateType: 'short'}) : '-' }}</td>
+                </tr>
+                <tr class="currency">
+                    <td class="label">{{ 'softsolutions4u.invoice.currency.label'|trans }}</td>
+                    <td class="value">{{ currency is defined and currency ? currency : '-' }}</td>
+                </tr>
+                {% if companyVatNumber is defined and companyVatNumber %}
+                <tr class="vat-number">
+                    <td class="label">{{ 'softsolutions4u.invoice.vat_number.label'|trans }}</td>
+                    <td class="value">{{ companyVatNumber }}</td>
+                </tr>
+                {% endif %}
+                {% if entity.order %}
+                <tr class="order">
+                    <td class="label">{{ 'softsolutions4u.invoice.details.order.label'|trans }}</td>
+                    <td class="value">{{ entity.order.identifier }}</td>
+                </tr>
+                {% endif %}
+                {% if entity.poNumber %}
+                <tr class="po-number">
+                    <td class="label">{{ 'softsolutions4u.invoice.po_number.label'|trans }}</td>
+                    <td class="value">{{ entity.poNumber }}</td>
+                </tr>
+                {% endif %}
+            </table>
+
+            {% if payableBy is defined and payableBy %}
+            <div class="payable-by">
+                <h4>{{ 'softsolutions4u.invoice.payable_by.label'|trans }}</h4>
+                {% for line in payableBy %}
+                    <p class="{{ loop.first ? 'payable-by__name' : 'payable-by__line' }}">{{ line }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+</div>
+
+<div class="page-footer">
+    {% if companyName %}{{ companyName }} &middot; {% endif %}{{ 'softsolutions4u.invoice.entity_label'|trans }} {{ entity.invoiceNo }}
+</div>
+
+
+<table class="address-table">
+    <tr>
+        <td>
+            <div class="address-block">
+                <h4>{{ 'softsolutions4u.invoice.details.bill_to_address.label'|trans }}</h4>
+                <p>
+                    {% for line in entity.billingAddressLines %}
+                        {{ line }}{% if not loop.last %}<br>{% endif %}
+                    {% else %}
+                        &mdash;
+                    {% endfor %}
+                </p>
+            </div>
+        </td>
+        <td>
+            <div class="address-block">
+                <h4>{{ 'softsolutions4u.invoice.details.ship_to_address.label'|trans }}</h4>
+                <p>
+                    {% for line in entity.shippingAddressLines %}
+                        {{ line }}{% if not loop.last %}<br>{% endif %}
+                    {% else %}
+                        &mdash;
+                    {% endfor %}
+                </p>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table class="line-items">
+    <colgroup>
+        <col style="width: 11%;">
+        <col style="width: 31%;">
+        <col style="width: 9%;">
+        <col style="width: 14%;">
+        <col style="width: 10%;">
+        <col style="width: 13%;">
+    </colgroup>
+    <thead>
+    <tr>
+        <th style="width: 11%;">{{ 'softsolutions4u.invoice.invoicelineitem.sku.label'|trans }}</th>
+        <th style="width: 31%;">{{ 'softsolutions4u.invoice.invoicelineitem.product.label'|trans }}</th>
+        <th class="text-right" style="width: 9%;">{{ 'softsolutions4u.invoice.invoicelineitem.quantity.label'|trans }}</th>
+        <th class="text-right" style="width: 14%;">{{ 'softsolutions4u.invoice.invoicelineitem.unit_price.label'|trans }}</th>
+        <th class="text-right" style="width: 10%;">{{ 'softsolutions4u.invoice.tax.label'|trans }}</th>
+        <th class="text-right" style="width: 13%;">{{ 'softsolutions4u.invoice.invoicelineitem.total.label'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for lineItem in entity.lineItems %}
+        <tr>
+            <td>{{ lineItem.productSku }}</td>
+            <td>{{ lineItem.productName }}</td>
+            <td class="text-right qty-cell">{{ lineItem.quantity }} {{ lineItem.productUnitCode }}</td>
+            <td class="text-right money-cell">{{ lineItem.value|oro_format_currency({currency: entity.currency}) }}</td>
+            <td class="text-right money-cell">{{ lineItem.taxAmount|oro_format_currency({currency: entity.currency}) }}</td>
+            <td class="text-right money-cell">{{ lineItem.total|oro_format_currency({currency: entity.currency}) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<table class="totals-table">
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.subtotal.label'|trans }}</td>
+        <td class="text-right">{{ entity.subtotal|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    {% if entity.discountAmount %}
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.discount.label'|trans }}</td>
+        <td class="text-right">-{{ entity.discountAmount|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.shipping.label'|trans }}</td>
+        <td class="text-right">{{ entity.shippingAmount|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.tax.label'|trans }}</td>
+        <td class="text-right">{{ entity.taxAmount|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    <tr class="grand-total">
+        <td>{{ 'softsolutions4u.invoice.grand_total.label'|trans }}</td>
+        <td class="text-right">{{ entity.grandTotal|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.amount_paid.label'|trans }}</td>
+        <td class="text-right">{{ entity.amountPaid|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+    <tr>
+        <td class="totals-label">{{ 'softsolutions4u.invoice.balance.label'|trans }}</td>
+        <td class="text-right">{{ entity.balance|oro_format_currency({currency: entity.currency}) }}</td>
+    </tr>
+</table>
+
+{% if entity.memo %}
+<div class="memo">
+    <strong>{{ 'softsolutions4u.invoice.details.memo.label'|trans }}:</strong> {{ entity.memo }}
+</div>
+{% endif %}
+
+{# Payment instructions on their own page; amount due and online payment only while money is owed. #}
+{% if paymentDetails is defined and paymentDetails %}
+{% set isPayable = paymentDetails.payable is defined and paymentDetails.payable %}
+{% set showOnline = isPayable and paymentDetails.onlineUrl %}
+<div class="pay-page">
+<div class="pay-keep-together">
+<table class="pay">
+    <tr class="pay__head-row">
+        <td class="pay__head" colspan="2">
+            <span class="pay__title">{{ 'softsolutions4u.invoice.bank.title'|trans }}</span>
+            {% if isPayable %}
+            <span class="pay__due">
+                {{ 'softsolutions4u.invoice.bank.amount_due.label'|trans }}
+                <b>{{ paymentDetails.amountDue|oro_format_currency({currency: paymentDetails.currency}) }}</b>
+            </span>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="pay__col pay__col--bank"{% if not showOnline %} colspan="2" style="width: 100%;"{% endif %}>
+            <div class="pay__label">{{ 'softsolutions4u.invoice.bank.transfer.label'|trans }}</div>
+            {% if paymentDetails.instructions %}
+                <div class="pay__note">{{ paymentDetails.instructions }}</div>
+            {% endif %}
+            <div class="pay__note pay__reference-note">{{ 'softsolutions4u.invoice.bank.reference.note'|trans({'%reference%': paymentDetails.reference}) }}</div>
+            <table class="pay__rows">
+                {% for label, value in paymentDetails.fields %}
+                    <tr>
+                        <td class="pay__k">{{ label|trans }}</td>
+                        <td class="pay__v">{{ value }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="pay__reference">
+                    <td class="pay__k">{{ 'softsolutions4u.invoice.bank.reference.label'|trans }}</td>
+                    <td class="pay__v pay__v--ref">{{ paymentDetails.reference }}</td>
+                </tr>
+            </table>
+        </td>
+        {% if showOnline %}
+        <td class="pay__col pay__col--online">
+            <div class="pay__label">{{ 'softsolutions4u.invoice.bank.online.label'|trans }}</div>
+            <div class="pay__note">{{ 'softsolutions4u.invoice.bank.online.description'|trans }}</div>
+            <a class="pay__cta" href="{{ paymentDetails.onlineUrl }}">
+                {{ 'softsolutions4u.invoice.bank.online.cta'|trans }}
+            </a>
+            <div class="pay__url">{{ paymentDetails.onlineUrl }}</div>
+        </td>
+        {% endif %}
+    </tr>
+</table>
+</div>
+</div>
+{% endif %}
+
+</body>
+</html>

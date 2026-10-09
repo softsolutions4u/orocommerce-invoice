@@ -1,0 +1,425 @@
+// This file is part of the SoftSolutions4U OroCommerce Invoice bundle.
+//
+// @category  SoftSolutions4U
+// @package   SoftSolutions4U\Bundle\InvoiceBundle
+// @author    Pradeep Elayaraja
+// @author    Ganesh
+// @copyright 2026 SoftSolutions4U
+// @license   https://www.gnu.org/licenses/gpl-3.0.html GPL-3.0-only
+// @link      https://www.softsolutions4u.com/
+
+/* duplicated from checkout-form.scss
+   so that invoice payment form has the same styles */
+
+.invoice-form {
+  // Oro core's own payment_methods block-type template hard-codes a
+  // `grid` class onto the outer wrapper it renders for this form
+  // (`invoice-form invoice-form--no-offset grid`, data-content=
+  // "payment_method_form") - it is NOT driven by the `attr` option in
+  // softsolutions4u_invoice_payment_form/layout.yml (already confirmed removed
+  // there), so nothing in this bundle's own templates/layouts can stop
+  // Oro core from emitting it. `.grid` is Oro's CSS Grid layout class
+  // for its JS Backbone datagrid component, not applicable to this
+  // plain radio-list wrapper, and is what was causing the misalignment.
+  // Scoped to this specific block via its data-content attribute so it
+  // doesn't touch any other legitimate `.grid` usage (e.g. real Oro
+  // datagrids) elsewhere on the page.
+  &.grid[data-content="payment_method_form"] {
+    display: block;
+  }
+
+  &__select-container {
+    display: $checkout-form-select-container-display;
+    flex-direction: $checkout-form-select-container-flex-direction;
+    justify-content: $checkout-form-select-container-justify-content;
+    align-items: $checkout-form-select-container-align-items;
+  }
+
+  &__select {
+    &--exp-month {
+      flex-basis: $checkout-form-select-exp-month-width;
+      margin: 0 16px 0 0;
+    }
+
+    &--exp-year {
+      flex-basis: $checkout-form-select-exp-year-width;
+    }
+  }
+
+  &__datepicker {
+    .datepicker-input {
+      max-width: none;
+    }
+  }
+
+  &__datepicker,
+  &__optional-ref-number,
+  &__order-notes {
+    margin: 16px;
+  }
+
+  &__radio {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+
+      .invoice-form__payment-container {
+        margin-bottom: 0;
+      }
+    }
+
+    .custom-radio {
+      &.checked {
+        + .invoice-form__payment-container {
+          .invoice-form__payment-methods-form {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  &__submit {
+    min-width: $checkout-form-submit-min-width;
+  }
+
+  &__payment-label {
+    display: block;
+    margin: $checkout-form-payment-label-margin;
+
+    font-weight: $checkout-form-payment-label-font-weight;
+  }
+
+  &__payment-container {
+    margin: $checkout-form-payment-container-margin;
+  }
+
+  &__payment-methods {
+    padding: $checkout-form-payment-methods-padding;
+
+    background: $checkout-form-payment-methods-background-color;
+
+    border-radius: $checkout-form-payment-methods-border-radius;
+
+    // Oro core's own payment-method-selector-component template (the
+    // `data-payment-method-forms` wrapper it renders around the radio
+    // list) ships with a hard-coded `grid` class of its own - that's
+    // core markup we can't edit from this bundle. `.grid` is Oro's CSS
+    // Grid layout class for its JS Backbone datagrid component
+    // (`display: grid; grid-template-columns: repeat(12, ...)`), which
+    // has nothing to do with a plain radio-button list and was pushing
+    // the "Payment Term" radio/label out of line with its text. Forcing
+    // it back to a normal block here neutralises that without touching
+    // Oro core.
+    .grid {
+      display: block;
+    }
+  }
+
+  &__payment-methods-authorized-card {
+    margin: 0 0 16px;
+  }
+
+  &__payment-methods-authorized-card-handle,
+  &__payment-methods-different-card-handle {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  &__payment-methods-list {
+    @include list-normalize();
+    @include clearfix();
+  }
+
+  &__payment-methods-item {
+    float: left;
+    margin: 0 16px 16px 0;
+}
+
+  &__payment-methods-form {
+    display: none;
+    margin: $checkout-form-payment-methods-form-margin;
+  }
+
+  &__asterix {
+    margin: $checkout-form-asterix-offset;
+
+    color: $checkout-form-asterix-color;
+  }
+
+  &__back {
+    margin: $checkout-form-back-offset;
+
+    &--no-offset {
+      margin: 0;
+    }
+
+    &--offset-bottom {
+      margin: $checkout-form-back-bottom-offset;
+    }
+  }
+
+  .form-field-cvv,
+  .form-field-CVV2 {
+    margin-right: 16px;
+  }
+}
+
+.invoice-line-items-collection {
+    margin-bottom: 20px;
+    width: 100%;
+
+    .invoice-line-items-table {
+        --input-field-width: 100%;
+
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        border: 1px solid #e0e0e0;
+
+        thead {
+            background-color: #f5f5f5;
+
+            th {
+                text-align: left;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
+                padding: 8px 6px;
+                border-bottom: 2px solid #e0e0e0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        tbody {
+            .line-item-row {
+                border-bottom: 1px solid #eee;
+
+                td {
+                    padding: 6px;
+                    vertical-align: middle;
+                }
+            }
+        }
+
+        // Product dominates; everything else is compact
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 34%;
+        }
+
+        // Unit
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 170px !important;
+            min-width: 170px !important;
+            max-width: 170px !important;
+        }
+
+        // Qty
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 170px !important;
+            min-width: 170px !important;
+            max-width: 170px !important;
+        }
+
+        // Unit Price
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 170px !important;
+            min-width: 170px !important;
+            max-width: 170px !important;
+        }
+
+        // Discount
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 9%;
+        }
+
+        // Tax
+        th:nth-child(6),
+        td:nth-child(6) {
+            width: 9%;
+        }
+
+        // Subtotal
+        th:nth-child(7),
+        td:nth-child(7) {
+            width: 9%;
+        }
+
+        // Total
+        th:nth-child(8),
+        td:nth-child(8) {
+            width: 9%;
+        }
+
+        // Remove
+        th:nth-child(9),
+        td:nth-child(9) {
+            width: 4%;
+            text-align: center;
+        }
+
+        td.line-item-sku {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .line-item-subtotal,
+        .line-item-total {
+            text-align: right;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            font-size: 12px;
+        }
+
+        .invoice-line-item-price-display {
+            display: inline-block;
+            padding: 4px 6px;
+            font-size: 12px;
+            color: #181d27;
+            white-space: nowrap;
+        }
+
+        .removeLineItem {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #c00;
+            padding: 2px;
+
+            &:hover {
+                color: #900;
+            }
+        }
+    }
+
+    .add-list-item {
+        margin-top: 10px;
+        display: inline-block;
+    }
+}
+
+/*
+ * Override OroCommerce's generic form-control styling for line-item fields.
+ *
+ * Oro's rule (specificity 0,1,1):
+ *   textarea, input[type=text], input[type=password], ... , .selector, .input { ... }
+ *
+ * Our previous attempt (`.invoice-line-items-table input`) tied Oro's
+ * specificity at (0,1,1), so the winner was decided by source order alone —
+ * unreliable across rebuilds. Chaining both ancestor classes below raises
+ * specificity to (0,3,1), which beats Oro's rule outright without needing
+ * !important anywhere.
+ */
+.invoice-line-items-collection .invoice-line-items-table input,
+.invoice-line-items-collection .invoice-line-items-table select,
+.invoice-line-items-collection .invoice-line-items-table textarea,
+.invoice-line-items-collection .invoice-line-items-table .selector,
+.invoice-line-items-collection .invoice-line-items-table .input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.oro-datagrid .grid-body-cell.grid-body-cell-remove {
+    vertical-align: middle;
+}
+/*
+ * Pay Invoice page UI polish (Round 11) - the form previously rendered as
+ * plain unstyled stacked fields (Amount To Pay input, Payment Method
+ * radio, Pay Now button, totals) with no visual grouping, card structure,
+ * or hierarchy. Wraps the whole form body in a bordered card, gives the
+ * amount input and payment method option clearer visual weight, and makes
+ * the submit button and totals box feel like a single cohesive "review and
+ * pay" panel instead of a stack of disconnected form controls.
+ */
+.invoice-payment-form {
+    max-width: 640px;
+
+    &__amount {
+        margin-bottom: 24px;
+
+        .invoice-payment-form__amount-input {
+            height: 48px;
+            padding: 0 16px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+    }
+}
+
+.invoice-form {
+    // The whole payment form body - amount, payment method, totals - reads
+    // as one cohesive card instead of bare stacked fields sitting directly
+    // on the page background.
+    &--no-offset {
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #e3e6ea;
+        border-radius: 6px;
+    }
+
+    &__payment-container {
+        margin: 0 0 24px;
+        padding: 16px;
+        background: #f8f9fb;
+        border: 1px solid #e3e6ea;
+        border-radius: 6px;
+    }
+
+    &__payment-label {
+        margin-bottom: 12px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    // A single payment method option (radio + label + method-specific
+    // detail like "Terms: 30 Days") reads as a distinct selectable card
+    // rather than bare inline text sitting next to a radio dot.
+    &__radio {
+        padding: 12px 16px;
+        background: #fff;
+        border: 1px solid #d5dae1;
+        border-radius: 4px;
+
+        .checkbox-label {
+            font-weight: 600;
+        }
+    }
+
+    &__submit {
+        min-width: 200px;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 600;
+
+        @include breakpoint('mobile-landscape') {
+            width: 100%;
+        }
+    }
+}
+
+// Pulls the totals box and submit button together visually - the totals
+// box sits directly under the button as the final "here's what you're
+// about to pay" confirmation, not a disconnected element further down
+// the page.
+.order-invoice-payment-summary {
+    .form-buttons {
+        margin-bottom: 16px;
+    }
+}

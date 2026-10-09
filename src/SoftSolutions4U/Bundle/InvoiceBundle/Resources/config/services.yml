@@ -1,0 +1,282 @@
+parameters:
+    # Payment methods (identifier prefixes) whose invoice payments stay pending until an administrator confirms them.
+    softsolutions4u_invoice.offline_payment_method_prefixes:
+        - payment_term
+        - money_order
+
+services:
+    # Factories
+    SoftSolutions4U\Bundle\InvoiceBundle\Factory\InvoicePaymentFactory:
+        arguments:
+            - '@oro_security.token_accessor'
+            - '@doctrine'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Factory\PaymentContextFactory:
+        arguments:
+            - '@oro_payment.context.builder_factory_basic'
+            - '@security.helper'
+
+    # Providers
+    softsolutions4u.invoice.provider.invoice_provider:
+        class: SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoiceProvider
+        public: true
+        arguments:
+            - '@doctrine'
+            - '@oro_locale.settings'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoiceProvider:
+        public: true
+        alias: softsolutions4u.invoice.provider.invoice_provider
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\FrontendInvoiceProvider:
+        public: true
+        arguments:
+            - '@doctrine'
+            - '@oro_security.acl_helper'
+            - '@oro_form.update_factory'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\FrontendPaymentFormProvider:
+        public: true
+        arguments:
+            - '@form.factory'
+            - '@router'
+        calls:
+            - ['setInvoicePaymentFactory', ['@SoftSolutions4U\Bundle\InvoiceBundle\Factory\InvoicePaymentFactory']]
+        tags:
+            - { name: layout.data_provider, alias: commerce_payment_type }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoicePaidAmountProvider:
+        arguments:
+            - '@doctrine'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoicePaymentSubtotalProvider:
+        arguments:
+            - '@oro_pricing.subtotal_processor.provider.arguments'
+            - '@translator'
+        tags:
+            - { name: oro_pricing.subtotal_provider, alias: softsolutions4u_invoice_payment.subtotal_payment_fee }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoicePaymentDetailsProvider:
+        arguments:
+            - '@oro_config.manager'
+            - '@router'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Generator\BankTransferReferenceGenerator'
+
+    # Layout data providers
+    SoftSolutions4U\Bundle\InvoiceBundle\Layout\DataProvider\InvoicePaymentSummaryProvider:
+        tags:
+            - { name: layout.data_provider, alias: softsolutions4u_invoice_payment_summary }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Layout\DataProvider\PaymentMethodViewsProvider:
+        arguments:
+            - '@oro_payment.payment_method_view.composite_provider'
+            - '@oro_payment.payment_method.composite_provider'
+            - '@oro_config.manager'
+        tags:
+            - { name: layout.data_provider, alias: commerce_payment_method_views }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Layout\DataProvider\FrontendInvoiceSectionsProvider:
+        arguments:
+            - '@doctrine'
+            - '@oro_security.acl_helper'
+        tags:
+            - { name: layout.data_provider, alias: softsolutions4u_invoice_frontend_sections }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Layout\DataProvider\PaymentContextProvider:
+        arguments:
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Factory\PaymentContextFactory'
+        tags:
+            - { name: layout.data_provider, alias: commerce_payment_context }
+
+    # Form types and handlers
+    SoftSolutions4U\Bundle\InvoiceBundle\Form\Type\InvoiceType:
+        arguments:
+            - '@oro_payment.formatter.payment_method_label'
+            - '@oro_payment.formatter.payment_status_label'
+            - '@security.authorization_checker'
+            - '@translator'
+        tags:
+            - { name: form.type }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Form\Type\InvoicePaymentType:
+        tags:
+            - { name: form.type, alias: softsolutions4u_invoice_payment }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Form\Type\PaymentMethodMultiSelectFormType:
+        arguments:
+            - '@oro_payment.payment_method.composite_provider'
+            - '@oro_payment.payment_method_view.composite_provider'
+        tags:
+            - { name: form.type, alias: softsolutions4u_invoice_payment_method }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Form\Handler\InvoicePaymentFormHandler:
+        public: true
+        arguments:
+            - '@event_dispatcher'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\PaymentManager'
+            - '@doctrine'
+
+    # Datagrid
+    softsolutions4u.invoice.datagrid.frontend_actions:
+        class: SoftSolutions4U\Bundle\InvoiceBundle\EventListener\FrontendInvoicesGridActionsListener
+        public: true
+
+    # Event listeners
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\OrderInvoicesSectionListener:
+        arguments:
+            - '@security.authorization_checker'
+            - '@translator'
+        tags:
+            - { name: kernel.event_listener, event: oro_ui.scroll_data.before.order-view, method: onOrderView }
+            - { name: kernel.event_listener, event: oro_ui.scroll_data.before.order-edit, method: onOrderEdit }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\OrderPaymentTransactionSyncGuard:
+        tags:
+            - { name: kernel.reset, method: reset }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\RecalculateInvoicePaidAmountsListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: softsolutions4u.invoice.payment_success, method: recalculate }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\OrderPaymentTransactionSynchronizer:
+        autowire: true
+
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\OrderPaymentTransactionListener:
+        autowire: true
+        tags:
+            - { name: doctrine.orm.entity_listener, entity: 'Oro\Bundle\PaymentBundle\Entity\PaymentTransaction', event: postPersist }
+            - { name: doctrine.orm.entity_listener, entity: 'Oro\Bundle\PaymentBundle\Entity\PaymentTransaction', event: postUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\OrderCancellationListener:
+        arguments:
+            - '@doctrine'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceCancellationManager'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Util\OrderCancellationChecker'
+            - '@logger'
+        tags:
+            - { name: kernel.reset, method: reset }
+            - { name: doctrine.orm.entity_listener, entity: Oro\Bundle\OrderBundle\Entity\Order, event: postUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\EventListener\AutoCreateInvoiceForPaymentTermListener:
+        arguments:
+            - '@doctrine'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceManager'
+            - '@oro_config.manager'
+            - '@logger'
+        tags:
+            - { name: kernel.reset, method: reset }
+            - { name: doctrine.orm.entity_listener, entity: Oro\Bundle\PaymentBundle\Entity\PaymentTransaction, event: postPersist }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    # Payment
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\PaymentManager:
+        public: true
+        arguments:
+            - '@oro_payment.payment_method.composite_provider'
+            - '@oro_payment.provider.payment_transaction'
+            - '@router'
+            - '@logger'
+            - '%softsolutions4u_invoice.offline_payment_method_prefixes%'
+        calls:
+            - ['addAction', [!php/const Oro\Bundle\PaymentBundle\Method\PaymentMethodInterface::VALIDATE, '@oro_payment.action.validate']]
+            - ['addAction', [!php/const Oro\Bundle\PaymentBundle\Method\PaymentMethodInterface::PURCHASE, '@oro_payment.action.purchase']]
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoicePaymentConfirmationManager:
+        public: true
+        arguments:
+            - '@event_dispatcher'
+            - '@logger'
+
+    # PDF
+    SoftSolutions4U\Bundle\InvoiceBundle\Generator\BankTransferReferenceGenerator: ~
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Pdf\InvoicePdfGenerator:
+        arguments:
+            - '@twig'
+            - '@oro_config.manager'
+            - '@oro_attachment.file_manager'
+            - '@doctrine'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoicePaymentDetailsProvider'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Pdf\InvoicePdfGeneratorInterface:
+        alias: SoftSolutions4U\Bundle\InvoiceBundle\Pdf\InvoicePdfGenerator
+
+    # Twig
+    SoftSolutions4U\Bundle\InvoiceBundle\Twig\DateTimeExtension:
+        parent: oro_locale.twig.date_time
+        tags:
+            - { name: twig.extension }
+
+    # Invoice number generator
+    SoftSolutions4U\Bundle\InvoiceBundle\Generator\InvoiceNumberGenerator:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Generator\InvoiceNumberGeneratorInterface:
+        alias: SoftSolutions4U\Bundle\InvoiceBundle\Generator\InvoiceNumberGenerator
+
+    # Invoice managers
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceLineItemManager:
+        arguments:
+            - '@oro_tax.provider.tax_provider_registry'
+            - '@doctrine.orm.entity_manager'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Builder\InvoiceBuilder:
+        arguments:
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Generator\InvoiceNumberGenerator'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceLineItemManager'
+            - '@oro_tax.provider.tax_provider_registry'
+            - '@oro_payment.provider.payment_transaction'
+            - '@oro_payment.manager.payment_status'
+            - '@oro_payment_term.provider.payment_term'
+            - '@doctrine'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceManager:
+        public: true
+        arguments:
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Builder\InvoiceBuilder'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceLineItemManager'
+            - '@doctrine.orm.entity_manager'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Provider\InvoicePaidAmountProvider'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\OrderPaymentLedgerSynchronizer'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Util\OrderCancellationChecker'
+            - '@logger'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Util\OrderCancellationChecker: ~
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\OrderPaymentLedgerSynchronizer:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceEmailManager:
+        arguments:
+            - '@oro_email.sender.email_template_sender'
+            - '@logger'
+            - '@oro_config.manager'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Util\OrderCancellationChecker'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\OrderPaymentStatusUpdater:
+        arguments:
+            - '@oro_payment.manager.payment_status'
+            - '@logger'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoicePaymentCompletionManager:
+        arguments:
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\OrderPaymentStatusUpdater'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceEmailManager'
+            - '@doctrine'
+            - '@logger'
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceCancellationManager:
+        public: true
+        arguments:
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceEmailManager'
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Util\OrderCancellationChecker'
+
+    # Console commands

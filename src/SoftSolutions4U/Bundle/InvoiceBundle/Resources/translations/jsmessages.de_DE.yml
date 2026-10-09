@@ -1,0 +1,36 @@
+softsolutions4u:
+  invoice:
+    entity_label: Rechnung
+    entity_plural_label: Rechnungen
+    actions:
+      proceed.label: Fortfahren
+      cancel.label: Abbrechen
+      confirmation:
+        title: Aktion bestätigen
+        message: Möchten Sie wirklich fortfahren?
+      resend_cancellation:
+        label: Stornobenachrichtigung erneut senden
+        title: Stornobenachrichtigung erneut senden
+        confirmation: Dem Kunden wird die Stornobenachrichtigung für diese Rechnung erneut per E-Mail gesendet.
+      cancel_invoice:
+        label: Rechnung stornieren
+        title: Rechnung stornieren
+        confirmation: 'Die Rechnung wird endgültig storniert und der Kunde per E-Mail benachrichtigt. Danach ist sie nicht mehr bearbeitbar, versendbar oder bezahlbar; bereits erhaltene Zahlungen werden nicht automatisch erstattet.'
+      confirm_payment:
+        label: Zahlung bestätigen
+        title: Zahlung bestätigen
+        confirmation: Damit bestätigen Sie, dass die ausstehende Zahlung auf Zahlungsziel eingegangen ist, und der Rechnungssaldo wird aktualisiert.
+    messages:
+      cancel_success: Rechnung storniert.
+      resend_cancellation_success: Stornobenachrichtigung an den Kunden gesendet.
+      resend_cancellation_error: Die Stornobenachrichtigung konnte nicht gesendet werden. Details finden Sie in den Protokollen.
+      cancel_error: Die Rechnung konnte nicht storniert werden. Details finden Sie in den Protokollen.
+      confirm_payment_success: Zahlung bestätigt.
+    frontend:
+      grid:
+        pagination:
+          totalRecordsShortPlural: '{0}Rechnungen|{1}Rechnung|]1,Inf[Rechnungen'
+      payment:
+        save_state_failed.message: Der Zahlungsstatus konnte nicht gespeichert werden, bitte versuchen Sie es erneut
+        action_failed.message: Die Aktion konnte nicht abgeschlossen werden, bitte versuchen Sie es erneut
+        processing_failed.message: Bei der Verarbeitung Ihrer Zahlung ist ein Fehler aufgetreten

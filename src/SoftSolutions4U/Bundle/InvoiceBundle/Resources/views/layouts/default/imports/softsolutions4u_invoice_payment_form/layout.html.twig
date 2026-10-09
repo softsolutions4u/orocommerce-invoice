@@ -1,0 +1,145 @@
+{% block __softsolutions4u_invoice_payment_form__container_widget %}
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': ' customer_user_form invoice-form',
+        'data-focusable': true,
+    }) %}
+    <div{{ block('block_attributes') }}
+        data-page-component-module="softsolutions4uinvoice/js/app/components/payments-component"
+        data-page-component-options="{{ {
+            'saveStateRoute': 'softsolutions4u_invoice_frontend_payment_save_state'
+        }|json_encode }}">
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block __softsolutions4u_invoice_payment_form__form_fields_widget %}
+    {{ form_widget(form.id) }}
+
+    <div class="invoice-payment-form__amount">
+        {{ form_row(form.payment_amount, {
+            'label': 'softsolutions4u.invoice.frontend.payment.line_items.payment_amount.label',
+            'attr': {
+                'class': 'invoice-payment-form__amount-input'
+            }
+        }) }}
+    </div>
+
+    {{ form_widget(form.payment_method) }}
+    {{ form_widget(form._token) }}
+{% endblock %}
+
+{% block order_body_block_container_widget %}
+    <div class="grid__row">
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block order_body_column_widget %}
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': " grid__column grid__column--6 grid__column--no-gutters-l"
+    }) %}
+    <div {{ block('block_attributes') }}>
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block __softsolutions4u_invoice_payment_form__payment_methods_widget %}
+    <div class="invoice-form__payment-container">
+        <label class="invoice-form__payment-label">
+            {{ 'softsolutions4u.invoice.frontend.payment.payment_method.label'|trans }}
+            <sup class="invoice-form__asterix">*</sup>
+        </label>
+        <div class="invoice-form__payment-methods">
+            {{ block_widget(block) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block __softsolutions4u_invoice_payment_form__form_actions_submit_widget %}
+    <div class="form-buttons">
+        {% set attr = layout_attr_defaults(attr, {'~class': ' invoice-form__submit'}) %}
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block _payment_additional_data_widget %}
+    {% set blockPrefix = options.block_prefix %}
+    {% for paymentMethod,view in options.views %}
+        {% set options = {payment_method: paymentMethod} %}
+        {{ block('_' ~ blockPrefix ~ view.block) }}
+    {% endfor %}
+{% endblock %}
+
+{% block _payment_methods_hidden_widget %}
+    <div class="hidden">
+        {% if form.additional_data is defined %}
+            <div data-page-component-module="orocheckout/js/app/components/payment-additional-data-component">
+                {{ form_row(form.additional_data) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block _invoice_payment_body_container_widget %}
+    <div class="order-invoice-payment-summary">
+        {{ block_widget(block) }}
+    </div>
+{% endblock %}
+
+{% block __softsolutions4u_invoice_payment_form__payment_summary_totals_widget %}
+    <div class="invoice-payment-summary"
+        data-page-component-module="softsolutions4uinvoice/js/app/components/payment-summary-component"
+        data-page-component-options="{{ {
+            'currency': summary.currency,
+            'grandTotal': summary.grandTotal,
+            'amountPaid': summary.amountPaid,
+            'paymentAmount': summary.paymentAmount
+        }|json_encode }}">
+        <div class="invoice-payment-summary__row invoice-payment-summary__row--payment">
+            <span class="invoice-payment-summary__label">
+                {{ 'softsolutions4u.invoice.frontend.payment.summary.payment_amount.label'|trans }}
+            </span>
+            <span class="invoice-payment-summary__value" data-role="payment-amount">
+                {{ summary.paymentAmount|oro_format_currency({currency: summary.currency}) }}
+            </span>
+        </div>
+        <div class="invoice-payment-summary__row">
+            <span class="invoice-payment-summary__label">
+                {{ 'softsolutions4u.invoice.frontend.payment.summary.amount_paid.label'|trans }}
+            </span>
+            <span class="invoice-payment-summary__value" data-role="amount-paid">
+                {{ summary.amountPaid|oro_format_currency({currency: summary.currency}) }}
+            </span>
+        </div>
+        <div class="invoice-payment-summary__row invoice-payment-summary__row--pending">
+            <span class="invoice-payment-summary__label">
+                {{ 'softsolutions4u.invoice.frontend.payment.summary.pending_amount.label'|trans }}
+            </span>
+            <span class="invoice-payment-summary__value" data-role="pending-amount">
+                {{ summary.balance|oro_format_currency({currency: summary.currency}) }}
+            </span>
+        </div>
+        <div class="invoice-payment-summary__row invoice-payment-summary__row--total">
+            <span class="invoice-payment-summary__label">
+                {{ 'softsolutions4u.invoice.frontend.payment.summary.grand_total.label'|trans }}
+            </span>
+            <span class="invoice-payment-summary__value" data-role="grand-total">
+                {{ summary.grandTotal|oro_format_currency({currency: summary.currency}) }}
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block __softsolutions4u_invoice_payment_form__form_errors_widget %}
+    {# Rendered directly: calling block_widget() here would re-enter this block. #}
+    {% if form is defined and form.vars.errors is defined and form.vars.errors|length > 0 %}
+        <div class="notification notification--error" role="alert">
+            {% for error in form.vars.errors %}
+                <div class="notification__item">
+                    <span class="fa-exclamation-circle" aria-hidden="true"></span>
+                    <span class="notification__text">{{ error.message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

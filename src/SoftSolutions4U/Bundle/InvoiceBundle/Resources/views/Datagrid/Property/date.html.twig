@@ -1,0 +1,8 @@
+{% set field = field|default('issueDate') %}
+{% set value = record.getValue(field) %}
+
+{% if value is not empty %}
+    {{ value|oro_format_date }}
+{% else %}
+    &mdash;
+{% endif %}

@@ -1,0 +1,17 @@
+softsolutions4u_invoices:
+    resource: "@SoftSolutions4UInvoiceBundle/Controller/InvoiceController.php"
+    type: attribute
+    prefix: /softsolutions4u/invoice
+
+softsolutions4u_invoice_admin:
+    resource: "@SoftSolutions4UInvoiceBundle/Controller/Admin/AdminInvoiceController.php"
+    type: attribute
+    prefix: /softsolutions4u/invoice
+
+softsolutions4u_frontend_invoices:
+    resource: "@SoftSolutions4UInvoiceBundle/Controller/Frontend/FrontendInvoiceController.php"
+    type: attribute
+    prefix: /customer/invoice
+    options:
+        frontend: true
+        expose: true

@@ -1,0 +1,480 @@
+softsolutions4u:
+    invoice:
+        entity_label: Invoice
+        entity_plural_label: Invoices
+        statuses:
+            draft: Draft
+            posted: Posted
+            open: Open
+            overdue: Overdue
+            paid: Paid
+            partially_paid: Partially Paid
+            cancelled: Cancelled
+        payment_statuses:
+            pending: Pending
+            partially: Partially Paid
+            full: Paid in Full
+        datetime:
+            future: 'In %time%'
+            past: '%time% ago'
+        process:
+            set_overdue:
+                label: 'Set Invoices as Overdue'
+        entity_grid_all_view_label: All %entity_plural_label%
+        id.label: ID
+        invoice_no.label: Invoice No.
+        customer.label: Customer
+        issue_date.label: Issue Date
+        due_date.label: Due Date
+        vat_number.label: VAT Number
+        payable_by.label: Payable By
+        amount.label: Amount
+        subtotal.label: Subtotal
+        discount.label: Discount
+        shipping_amount.label: Shipping
+        tax_total.label: Total Tax
+        grand_total.label: Grand Total
+        currency.label: Currency
+        amount_paid.label: Amount Paid
+        line_items.label: Invoice Line Items
+        status.label: Invoice Status
+        balance.label: Balance
+        payment_status.label: Payment Status
+        po_number.label: PO Number
+        order_id.label: Order ID
+        order_number.label: Order Number
+        order_number.short_label: 'Order #'
+        invoice_date.label: Invoice Date
+        billing_address.label: Billing Address
+        shipping_address.label: Shipping Address
+        shipping.label: Shipping
+        tax.label: Tax
+        notes.label: Notes
+        notes.placeholder: 'Add invoice notes...'
+        activity.label: Activity
+        activity.placeholder: 'No activity recorded for this invoice yet.'
+        create.title: 'Create Invoice'
+        invoice_no.auto_generate: 'Auto Generate'
+        status.draft: Draft
+        payment_success: 'Your payment has been made successfully'
+        ui.placeholder_text: 'Not available'
+        ui.not_available: 'N/A'
+
+        address:
+            name.label: Name
+            first_name.label: First Name
+            last_name.label: Last Name
+            organization.label: Organization
+            street1.label: Street 1
+            street2.label: Street 2
+            city.label: City
+            state.label: State
+            postal_code.label: Postal Code
+            country.label: Country
+            phone.label: Phone
+
+        payments:
+            empty.message: 'There are no invoice payments'
+
+        invoicelineitem:
+            entity_label: Invoice Line Item
+            entity_plural_label: Invoice Line Items
+            id.label: ID
+            invoice.label: Invoice
+            amount.label: Amount
+            currency.label: Currency
+            summary.label: Summary
+            sku.label: SKU
+            product.label: Product
+            product.placeholder: 'Select a product'
+            description.label: Description
+            quantity.label: Qty
+            unit_price.label: Unit Price
+            total.label: Total
+            remove.label: Remove
+
+        invoicepayment:
+            entity_label: Invoice Payment
+            entity_plural_label: Invoice Payments
+            id.label: ID
+            payment_method.label: Payment Method
+            amount.label: Amount
+            total.label: Total
+            currency.label: Currency
+            line_items.label: Invoices
+            subtotal.label: Subtotal
+
+        invoicepaymentlineitem:
+            entity_label: Invoice Payment Line Item
+            entity_plural_label: Invoice Payment Line Items
+            id.label: ID
+            invoice.label: Invoice
+            invoice_payment.label: Invoice Payment
+            amount.label: Amount
+            currency.label: Currency
+
+        system_configuration:
+            groups:
+                invoice_management:
+                    title: 'Invoice Management'
+            fields:
+                invoices_enabled:
+                    label: Enable Invoices
+                    tooltip: Enable Invoices
+                    description: Enable Invoices
+                invoice_payment_methods:
+                    label: Payment Methods
+                    tooltip: Payment Methods
+                    description: Payment Methods
+                company_name:
+                    label: Company Name
+                    tooltip: The company name printed on invoice PDFs.
+                company_vat_number:
+                    label: VAT Number
+                    tooltip: Your company's VAT registration number, printed on invoice PDFs. Leave empty to omit it.
+                company_logo:
+                    label: Company Logo
+                    tooltip: Logo image printed at the top of invoice PDFs. Recommended max height 80px.
+                bank_details_enabled:
+                    label: 'Show Payment Instructions on Invoice PDF'
+                    tooltip: 'Prints bank details and payment instructions at the bottom of the invoice PDF.'
+                bank_us_enabled:
+                    label: 'Enable US Bank Account'
+                    tooltip: 'Used for invoices issued in USD.'
+                bank_us_account_holder:
+                    label: 'US Account Holder'
+                bank_us_bank_name:
+                    label: 'US Bank Name'
+                bank_us_routing_number:
+                    label: 'US Routing Number (ABA)'
+                    tooltip: 'Nine digit ABA routing number used for domestic ACH and wire transfers.'
+                bank_us_account_number:
+                    label: 'US Account Number'
+                bank_us_swift:
+                    label: 'US SWIFT / BIC'
+                    tooltip: 'Required for transfers sent from outside the United States.'
+                bank_us_instructions:
+                    label: 'US Payment Instructions'
+                bank_de_enabled:
+                    label: 'Enable German Bank Account'
+                    tooltip: 'Used for invoices issued in EUR.'
+                bank_de_account_holder:
+                    label: 'German Account Holder'
+                bank_de_bank_name:
+                    label: 'German Bank Name'
+                bank_de_iban:
+                    label: 'German IBAN'
+                    tooltip: 'International Bank Account Number used for SEPA transfers.'
+                bank_de_bic:
+                    label: 'German BIC'
+                    tooltip: 'Bank Identifier Code, also known as the SWIFT code.'
+                bank_de_instructions:
+                    label: 'German Payment Instructions'
+                auto_create_for_payment_term:
+                    label: 'Automatically Create Invoices for Payment Term Orders'
+                    tooltip: 'When enabled, placing an order that uses a Payment Term payment method automatically creates a DRAFT invoice for it. Drafts are not sent to the customer until posted.'
+
+        navigation:
+            view: 'Invoices'
+            view_title: 'Invoice %invoiceNo%'
+            create: 'Create Invoice'
+            update: 'Edit Invoice %invoiceNo%'
+
+        summary:
+            title: 'Summary'
+
+        order:
+            action:
+                create.label: 'Create Invoice'
+            create:
+                placeholder:
+                    title: 'Create Invoice'
+                    message: 'Invoice creation for order #%orderId% is not implemented yet.'
+            tab:
+                invoices:
+                    label: 'Invoices'
+
+        frontend:
+            invoice:
+                identifier.label: 'Invoice #%identifier%'
+                toolbar-actions:
+                    btn:
+                        print: 'Print Invoice'
+                        download: 'Download'
+
+            invoice_link.text: '< Back to Invoice List'
+
+            breadcrumbs:
+                home.label: 'Home'
+                my_account.label: 'My Account'
+                view.label: 'View'
+                label: 'Breadcrumbs'
+
+            grid:
+                page_title.label: 'Invoice History'
+                outstanding.label: 'Pending Invoices'
+                paid.label: 'Paid Invoices'
+                cancelled.label: 'Cancelled Invoices'
+                empty.label: 'You do not have any invoices yet.'
+                invoice_date.label: 'Invoice Date'
+                total_amount.label: 'Total Amount'
+                payment_status.label: 'Payment Status'
+                assigned_to.label: 'Assigned To'
+                bill_to.label: 'Bill To'
+                ship_to.label: 'Ship To'
+                actions.label: 'Actions'
+
+            payment:
+                line_items:
+                    payment_amount.label: 'Amount to Pay'
+                payment_method.label: 'Select a Payment Method'
+                actions:
+                    create.label: 'Pay Now'
+                    process.label: 'Pay Now'
+                    cancel.label: 'Cancel'
+                title.label: 'Pay Invoice'
+                success.message: 'Your payment has been made successfully'
+                pending.message: 'Your payment has been received and is awaiting confirmation.'
+                failed.message: 'Your payment was unsuccessful, please try again'
+                inactive.message: 'Payment has already been marked as complete, please try again'
+                not_payable.message: 'This invoice is not currently available for payment'
+                summary:
+                    payment_amount.label: 'Payment amount'
+                    amount_paid.label: 'Already paid'
+                    pending_amount.label: 'Pending invoice amount'
+                    grand_total.label: 'Total invoice amount'
+                errors:
+                    no_unpaid_invoices: 'No invoices currently require payment.'
+                    multi_currency: 'Payments in multiple currencies are not supported.'
+                    no_customer_user: 'The customer user could not be determined for this payment.'
+                    no_invoice: 'An invoice must be selected for payment.'
+                    no_payment_method: 'Please select a payment method.'
+                    amount_not_positive: 'Enter a payment amount greater than zero.'
+                    amount_exceeds_balance: 'The payment amount cannot exceed the outstanding balance of %currency% %balance%.'
+                save_state_failed.message: 'The payment state could not be saved, please try again'
+                action_failed.message: 'The action could not be completed, please try again'
+                processing_failed.message: 'An error occurred while processing your payment'
+
+            line_item:
+                sku.label: 'SKU'
+                product.label: 'Product'
+                unit.label: 'Unit'
+                quantity.label: 'Qty'
+                unit_price.label: 'Unit Price'
+                discount.label: 'Discount'
+                tax.label: 'Tax'
+                subtotal.label: 'Subtotal'
+                total.label: 'Total'
+                unit_singular.label: 'item'
+                unit_plural.label: 'items'
+                actions:
+                    view.label: 'View Product'
+
+            line_items:
+                empty.message: 'This invoice has no line items.'
+                pagination:
+                    previous.label: 'Previous Page'
+                    next.label: 'Next Page'
+                    of.label: 'of'
+                filter:
+                    label: 'Search'
+                    placeholder: 'Search by product name or SKU'
+                    submit.label: 'Search'
+                    clear.label: 'Clear'
+                    no_results.label: 'No line items match your search.'
+
+
+        sections:
+            general.label: 'General'
+            addresses.label: 'Addresses'
+            line_items.label: 'Invoice Line Items'
+            payments.label: 'Invoice Payments'
+            information.label: 'Invoice Information'
+            summary.label: 'Summary'
+            actions.label: 'Actions'
+            billing_address.label: 'Billing Address'
+            shipping_address.label: 'Shipping Address'
+            notes.label: 'Notes'
+            totals.label: 'Totals'
+            general_information: 'General Information'
+
+        privilege:
+            category:
+                invoice:
+                    label: 'Invoice'
+
+        acl:
+            post:
+                label: 'Send to Customer'
+            download_pdf:
+                label: 'Download PDF'
+            add_note:
+                label: 'Invoice Add Note'
+            send_reminder:
+                label: 'Send Payment Reminder'
+            send_payment_confirmation:
+                label: 'Send Payment Confirmation'
+            cancel:
+                label: 'Cancel Invoice'
+            frontend_view:
+                label: 'View Invoices'
+            confirm_payment:
+                label: 'Confirm Payment'
+            view:
+                label: 'View Invoice'
+            create:
+                label: 'Create Invoice'
+            update:
+                label: 'Edit Invoice'
+            delete:
+                label: 'Delete Invoice'
+
+        reference:
+            label: 'Reference'
+            close: 'Close'
+            download: 'Download'
+            unavailable: 'Not available yet'
+            video:
+                label: 'Video Reference'
+                title: 'Video Reference'
+                unsupported: 'Your browser does not support HTML5 video.'
+                error: 'The video could not be played. Check that the file in the Reference folder is a supported format.'
+            document:
+                label: 'Document Reference'
+                title: 'Document Reference'
+                preview_unavailable: 'A preview of this file type is not available in the browser. Use Download to open it.'
+
+        actions:
+            send_to_customer:
+                label: 'Send to Customer'
+                confirmation: 'To send this invoice to the customer, it must first be posted. Once posted, the invoice can no longer be modified.'
+            download_pdf:
+                label: 'Download PDF'
+            preview_pdf:
+                label: 'Preview'
+                title: 'Invoice Preview'
+                close: 'Close'
+                error: 'The invoice preview could not be loaded. Check the logs for details.'
+            send_reminder:
+                label: 'Send Reminder'
+                title: 'Send Payment Reminder'
+                confirmation: 'This will email the customer a reminder of the outstanding balance on this invoice.'
+            send_payment_confirmation:
+                label: 'Payment Confirmation'
+                title: 'Send Payment Confirmation'
+                confirmation: 'This invoice is paid in full. This will email the customer a payment confirmation.'
+            cancel_invoice:
+                label: 'Cancel Invoice'
+                title: 'Cancel Invoice'
+                confirmation: 'This will permanently cancel the invoice and notify the customer by email. It cannot be edited, posted, or paid afterwards, and payments already received are not refunded automatically.'
+            resend_cancellation:
+                label: 'Resend Cancellation Notice'
+                title: 'Resend Cancellation Notice'
+                confirmation: 'This will email the customer the cancellation notice for this invoice again.'
+            create:
+                label: 'Create Invoice'
+            save_draft:
+                label: 'Save Draft'
+            cancel:
+                label: 'Cancel'
+            proceed:
+                label: 'Proceed'
+            add_note:
+                label: 'Add Note'
+            confirm_payment:
+                label: 'Confirm Payment'
+                title: 'Confirm Payment'
+                confirmation: 'This confirms that the pending offline payment has been received and updates the invoice balance.'
+            confirmation:
+                title: 'Confirm Action'
+                message: 'Are you sure you want to proceed?'
+
+        messages:
+            post_error: 'The invoice could not be posted. Check the logs for details.'
+            no_recipient: 'This invoice has no customer user with an email address to send to.'
+            email_send_error: 'The email could not be sent. Check the logs for details.'
+            already_posted: 'This invoice has already been posted.'
+            reminder_paid_in_full: 'This invoice is paid in full, so no payment reminder is needed.'
+            confirmation_balance_outstanding: 'This invoice still has an outstanding balance, so a payment confirmation cannot be sent.'
+            send_reminder_sent_to: 'Payment reminder sent to %email%.'
+            send_payment_confirmation_sent_to: 'Payment confirmation sent to %email%.'
+            no_pending_payments: 'There are no pending payments to confirm for this invoice.'
+            confirm_payment_success: 'Payment confirmed.'
+            payment_awaiting_confirmation: 'A payment for this invoice is awaiting confirmation.'
+            send_reminder_success: 'Payment reminder sent to the customer.'
+            send_reminder_error: 'The payment reminder could not be sent. Check the logs for details.'
+            send_payment_confirmation_success: 'Payment confirmation sent to the customer.'
+            send_payment_confirmation_error: 'The payment confirmation could not be sent. Check the logs for details.'
+            # Retained so any cached page or third-party override still resolves these keys.
+            add_note:
+                label: 'Add Note'
+            send_email:
+                label: 'Send Email'
+            create_success: 'Invoice %invoiceNo% was created successfully. <a href="%url%">View Invoice</a>'
+            create_success_short: 'Invoice %invoiceNo% was created successfully.'
+            update_success: 'Invoice updated successfully.'
+            post_success: 'Invoice posted and sent to customer.'
+            post_email_error: 'Invoice was posted, but the notification email could not be sent. Check the logs for details.'
+            resend_cancellation_success: 'Cancellation notice sent to the customer.'
+            resend_cancellation_error: 'The cancellation notice could not be sent. Check the logs for details.'
+            resend_cancellation_not_cancelled: 'This invoice is not cancelled, so there is no cancellation notice to send.'
+            cancel_success: 'Invoice cancelled.'
+            cancel_error: 'The invoice could not be cancelled. Check the logs for details.'
+            cancel_already_cancelled: 'This invoice has already been cancelled.'
+            post_cancelled: 'This invoice has been cancelled and can no longer be sent to the customer.'
+            post_order_cancelled: 'The order behind this invoice has been cancelled, so the invoice was cancelled instead of being sent to the customer.'
+            posted_readonly: 'This invoice has been posted and can no longer be modified.'
+            cancelled_readonly: 'This invoice has been cancelled and can no longer be modified.'
+            already_draft: 'An invoice is already in draft for this order. Delete it before creating a new one.'
+            already_created: 'An invoice has already been created for this order.'
+            create_error: 'The invoice could not be created. See the application log for details.'
+            order_cancelled: 'This order has been cancelled. An invoice cannot be created for a cancelled order.'
+            delete_has_payments: 'This invoice cannot be deleted because it has recorded payments.'
+            delete_not_draft: 'This invoice cannot be deleted because it is not in Draft status.'
+
+        details:
+            title.label: 'Invoice Details'
+            owner.label: 'Owner'
+            change_history.label: 'Change History'
+            customer_user.label: 'Customer User'
+            order.label: 'Order'
+            seller_information.label: 'Seller Information'
+            bill_to_address.label: 'Bill To Address'
+            ship_to_address.label: 'Ship To Address'
+            payment_method.label: 'Payment Method'
+            payment_status.label: 'Payment Status'
+            internal_status.label: 'Internal Status'
+            website.label: 'Website'
+            guest_payment_link.label: 'Guest Payment Link'
+            memo.label: 'Memo'
+            description.placeholder: 'Invoice description will be displayed here.'
+            activity.placeholder: 'Activity stream placeholder. Oro activity widget will be integrated in a later phase.'
+            status.placeholder: 'Unknown'
+            tabs:
+                general: 'General Information'
+                description: 'Description'
+                line_items: 'Line Items'
+                payments: 'Payments'
+                activity: 'Activity'
+
+        payment:
+            type.label: 'Type'
+            successful.label: 'Successful'
+
+        bank:
+            title: 'Payment instructions'
+            account_holder.label: 'Account holder'
+            bank_name.label: 'Bank'
+            routing_number.label: 'Routing number (ABA)'
+            account_number.label: 'Account number'
+            swift.label: 'SWIFT / BIC'
+            iban.label: 'IBAN'
+            bic.label: 'BIC'
+            reference.label: 'Reference'
+            reference.note: 'Quote reference %reference% with your transfer so we can match it to this invoice.'
+            amount_due.label: 'Amount due'
+            transfer.label: 'Pay by bank transfer'
+            online:
+                label: 'Pay online'
+                description: 'Settle this invoice from your account with a card or your saved payment method.'
+                cta: 'Pay this invoice online'

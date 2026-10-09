@@ -1,0 +1,9 @@
+Oro\Bundle\CustomerBundle\Entity\Customer:
+    invoice_customer_a:
+        name: 'Invoice Customer A'
+        organization: '@default_organization'
+        owner: '@admin_user'
+    invoice_customer_b:
+        name: 'Invoice Customer B'
+        organization: '@default_organization'
+        owner: '@admin_user'

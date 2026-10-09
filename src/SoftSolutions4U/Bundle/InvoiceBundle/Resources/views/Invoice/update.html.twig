@@ -1,0 +1,153 @@
+{% extends '@OroUI/actions/update.html.twig' %}
+{% import '@OroUI/macros.html.twig' as UI %}
+
+{% oro_title_set({params: {"%invoiceNo%": entity.invoiceNo|default('softsolutions4u.invoice.actions.create.label'|trans)} }) %}
+
+{% block navButtons %}
+    {{ UI.cancelButton(entity.id ? path('softsolutions4u_invoice_view', {id: entity.id}) : path('softsolutions4u_invoice_index')) }}
+    {# Preview the generated PDF without leaving the edit form. #}
+    {% if entity.id and not entity.isPosted() and is_granted('softsolutions4u_invoice_download_pdf') %}
+        <div class="pull-left btn-group icons-holder">
+            <a href="#"
+                class="btn icons-holder-text no-hash"
+                role="button"
+                data-page-component-module="softsolutions4uinvoice/js/app/components/invoice-pdf-preview"
+                data-page-component-options="{{ {
+                    previewUrl: path('softsolutions4u_invoice_preview_pdf', {id: entity.id}),
+                    downloadUrl: path('softsolutions4u_invoice_download_pdf', {id: entity.id}),
+                    title: 'softsolutions4u.invoice.actions.preview_pdf.title'|trans,
+                    downloadText: 'softsolutions4u.invoice.actions.download_pdf.label'|trans,
+                    closeText: 'softsolutions4u.invoice.actions.preview_pdf.close'|trans
+                }|json_encode|e('html_attr') }}">
+                <span class="fa-file-pdf-o" aria-hidden="true"><span class="sr-only">{{ 'softsolutions4u.invoice.actions.preview_pdf.label'|trans }}</span></span>
+                {{ 'softsolutions4u.invoice.actions.preview_pdf.label'|trans }}
+            </a>
+        </div>
+    {% endif %}
+    {% set html = '' %}
+    {% if is_granted('softsolutions4u_invoice_view') %}
+        {% set html = html ~ UI.saveAndCloseButton({
+            'route': 'softsolutions4u_invoice_view',
+            'params': {id: '$id'}
+        }) %}
+    {% endif %}
+    {% if is_granted('softsolutions4u_invoice_update') %}
+        {% set html = html ~ UI.saveAndStayButton({
+            'route': 'softsolutions4u_invoice_update',
+            'params': {id: '$id'}
+        }) %}
+    {% endif %}
+    {{ UI.dropdownSaveButton({'html': html}) }}
+{% endblock navButtons %}
+
+{% block pageHeader %}
+    {% set breadcrumbs = {
+        entity: entity,
+        indexPath: path('softsolutions4u_invoice_index'),
+        indexLabel: 'softsolutions4u.invoice.entity_plural_label'|trans,
+        entityTitle: entity.id ? entity.invoiceNo : 'softsolutions4u.invoice.actions.create.label'|trans
+    } %}
+    {{ parent() }}
+{% endblock pageHeader %}
+
+{% block content_data %}
+    {{ form_start(form) }}
+    <div class="widget-content">
+        {{ form_errors(form) }}
+
+        {% set generalBlock %}
+            <div class="responsive-block">
+                {{ form_row(form.customer) }}
+                {{ form_row(form.customerUser) }}
+                {{ form_row(form.invoiceNo) }}
+                {{ form_row(form.poNumber) }}
+                {{ form_row(form.status) }}
+                {{ form_row(form.internalStatus) }}
+                {{ form_row(form.issueDate) }}
+                {{ form_row(form.dueDate) }}
+                {{ form_row(form.paymentMethod) }}
+                {{ form_row(form.paymentStatus) }}
+                {{ form_row(form.amount) }}
+                {{ form_row(form.subtotal) }}
+                {{ form_row(form.discountAmount) }}
+                {{ form_row(form.taxAmount) }}
+                {{ form_row(form.grandTotal) }}
+                {% if is_granted('softsolutions4u_invoice_add_note') %}
+                    {{ form_row(form.memo) }}
+                {% endif %}
+            </div>
+        {% endset %}
+
+        {% set addressBlock %}
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>{{ 'softsolutions4u.invoice.billing_address.label'|trans }}</h4>
+                    <div class="responsive-block">
+                        {{ form_row(form.billingAddressFirstName) }}
+                        {{ form_row(form.billingAddressLastName) }}
+                        {{ form_row(form.billingAddressOrganization) }}
+                        {{ form_row(form.billingAddressPhone) }}
+                        {{ form_row(form.billingAddressStreet1) }}
+                        {{ form_row(form.billingAddressStreet2) }}
+                        {{ form_row(form.billingAddressCity) }}
+                        {{ form_row(form.billingAddressState) }}
+                        {{ form_row(form.billingAddressPostalCode) }}
+                        {{ form_row(form.billingAddressCountry) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h4>{{ 'softsolutions4u.invoice.shipping_address.label'|trans }}</h4>
+                    <div class="responsive-block">
+                        {{ form_row(form.shippingAddressFirstName) }}
+                        {{ form_row(form.shippingAddressLastName) }}
+                        {{ form_row(form.shippingAddressOrganization) }}
+                        {{ form_row(form.shippingAddressPhone) }}
+                        {{ form_row(form.shippingAddressStreet1) }}
+                        {{ form_row(form.shippingAddressStreet2) }}
+                        {{ form_row(form.shippingAddressCity) }}
+                        {{ form_row(form.shippingAddressState) }}
+                        {{ form_row(form.shippingAddressPostalCode) }}
+                        {{ form_row(form.shippingAddressCountry) }}
+                    </div>
+                </div>
+            </div>
+        {% endset %}
+
+        {% import '@OroDataGrid/macros.html.twig' as dataGrid %}
+
+        {% set lineItemsBlock %}
+            {{ form_widget(form.lineItemIdsToDelete) }}
+            {% if is_granted('DELETE', 'entity:SoftSolutions4U\\Bundle\\InvoiceBundle\\Entity\\InvoiceLineItem') %}
+                <div data-page-component-module="softsolutions4uinvoice/js/app/components/line-item-pending-delete-component">
+                    {{ dataGrid.renderGrid('softsolutions4u-invoice-line-items-edit-grid', {invoice_id: entity.id}) }}
+                </div>
+            {% else %}
+                {{ dataGrid.renderGrid('softsolutions4u-invoice-line-items-grid', {invoice_id: entity.id}) }}
+            {% endif %}
+        {% endset %}
+
+        {% set dataBlocks = [
+            {
+                title: 'softsolutions4u.invoice.sections.general.label'|trans,
+                class: 'active',
+                subblocks: [{ data: [generalBlock] }]
+            },
+            {
+                title: 'softsolutions4u.invoice.sections.addresses.label'|trans,
+                subblocks: [{ data: [addressBlock] }]
+            },
+            {
+                title: 'softsolutions4u.invoice.sections.line_items.label'|trans,
+                subblocks: [{ data: [lineItemsBlock] }]
+            }
+        ]
+        %}
+
+        {{ form_rest(form) }}
+
+        {% set id = 'invoice-edit' %}
+        {% set data = { dataBlocks: dataBlocks } %}
+        {{ parent() }}
+    </div>
+    {{ form_end(form) }}
+{% endblock content_data %}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SoftSolutions4U OroCommerce Invoice - unit test configuration.
+
+    Inside an OroCommerce application, run:
+        php bin/phpunit -c vendor/softsolutions4u/orocommerce-invoice/phpunit.xml
+
+    Coverage: PCOV only instruments files below pcov.directory, which defaults to the
+    application's src/ folder. Point it at this package, otherwise every class reports 0%
+    in the coverage report:
+        php -d pcov.enabled=1 -d pcov.directory=$(realpath vendor/softsolutions4u/orocommerce-invoice/src) bin/phpunit -c vendor/softsolutions4u/orocommerce-invoice/phpunit.xml
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="../../autoload.php"
+         colors="true"
+         cacheResultFile=".phpunit.cache/test-results"
+         failOnWarning="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true"
+         convertDeprecationsToExceptions="false">
+
+    <testsuites>
+        <testsuite name="SoftSolutions4U Invoice Bundle - Unit">
+            <directory>src/SoftSolutions4U/Bundle/InvoiceBundle/Tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">src/SoftSolutions4U/Bundle/InvoiceBundle</directory>
+        </include>
+        <exclude>
+            <directory>src/SoftSolutions4U/Bundle/InvoiceBundle/Tests</directory>
+            <directory>src/SoftSolutions4U/Bundle/InvoiceBundle/Resources</directory>
+            <directory>src/SoftSolutions4U/Bundle/InvoiceBundle/Migrations</directory>
+        </exclude>
+    </coverage>
+
+    <php>
+        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED &amp; ~E_USER_DEPRECATED"/>
+        <ini name="memory_limit" value="-1"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    </php>
+</phpunit>

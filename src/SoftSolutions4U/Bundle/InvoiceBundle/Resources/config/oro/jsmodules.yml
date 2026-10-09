@@ -1,0 +1,8 @@
+dynamic-imports:
+    commons:
+        - softsolutions4uinvoice/js/app/components/payments-component
+        - softsolutions4uinvoice/js/app/components/payment-summary-component
+        - softsolutions4uinvoice/js/app/components/line-item-pending-delete-component
+        - softsolutions4uinvoice/js/app/components/confirm-ajax-button
+        - softsolutions4uinvoice/js/app/components/invoice-pdf-preview
+        - softsolutions4uinvoice/js/app/auto-hide-flash-messages

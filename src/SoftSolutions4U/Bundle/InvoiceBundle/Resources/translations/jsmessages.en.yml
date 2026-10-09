@@ -1,0 +1,37 @@
+softsolutions4u:
+    invoice:
+        entity_label: 'Invoice'
+        entity_plural_label: 'Invoices'
+        # Operation confirmation dialogs are rendered by Oro's JS component, so their texts must be in jsmessages.
+        actions:
+            proceed.label: 'Proceed'
+            cancel.label: 'Cancel'
+            confirmation:
+                title: 'Confirm Action'
+                message: 'Are you sure you want to proceed?'
+            resend_cancellation:
+                label: 'Resend Cancellation Notice'
+                title: 'Resend Cancellation Notice'
+                confirmation: 'This will email the customer the cancellation notice for this invoice again.'
+            cancel_invoice:
+                label: 'Cancel Invoice'
+                title: 'Cancel Invoice'
+                confirmation: 'This will permanently cancel the invoice and notify the customer by email. It cannot be edited, posted, or paid afterwards, and payments already received are not refunded automatically.'
+            confirm_payment:
+                label: 'Confirm Payment'
+                title: 'Confirm Payment'
+                confirmation: 'This confirms that the pending Payment Term payment has been received and updates the invoice balance.'
+        messages:
+            cancel_success: 'Invoice cancelled.'
+            cancel_error: 'The invoice could not be cancelled. Check the logs for details.'
+            resend_cancellation_success: 'Cancellation notice sent to the customer.'
+            resend_cancellation_error: 'The cancellation notice could not be sent. Check the logs for details.'
+            confirm_payment_success: 'Payment confirmed.'
+        frontend:
+            grid:
+                pagination:
+                    totalRecordsShortPlural: '{0}invoices|{1}invoice|]1,Inf[invoices'
+            payment:
+                save_state_failed.message: 'The payment state could not be saved, please try again'
+                action_failed.message: 'The action could not be completed, please try again'
+                processing_failed.message: 'An error occurred while processing your payment'

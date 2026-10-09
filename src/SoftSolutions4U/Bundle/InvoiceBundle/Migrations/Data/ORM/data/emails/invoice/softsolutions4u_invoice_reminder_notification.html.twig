@@ -1,0 +1,276 @@
+{#
+    @name = softsolutions4u_invoice_reminder_notification
+    @entityName = SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+    @subject = Payment Reminder: Invoice {{ entity.invoiceNo|default('') }}
+    @isSystem = true
+    @isEditable = true
+#}
+
+{% extends oro_get_email_template('base_storefront') %}
+
+{% block content %}
+    <h1 style="{{ styleH1 }}">Hello {{ entity.customerUser|oro_format_name }},</h1>
+
+    <!--empty space-->
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="12" style="{{ styleEmptyRowH12 }}">&nbsp;</td>
+        </tr>
+    </table>
+
+    <p style="{{ styleP }}">
+        This is a reminder regarding your invoice
+        <strong>{{ entity.invoiceNo|default('') }}</strong>.
+        The current outstanding balance is
+        <strong>{{ ((((entity.grandTotal - entity.amountPaid) * 100 + 0.5) // 1) / 100)|oro_format_currency({'currency': entity.currency}) }}</strong>,
+        due by
+        <strong>{{ entity.dueDate ? entity.dueDate|oro_format_date({dateType: 'short'}) : 'the date shown below' }}</strong>.
+        Please review the invoice details below and complete the payment if there is an outstanding balance.
+    </p>
+
+    <!--empty space-->
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="32" style="{{ styleEmptyRowH32 }}">&nbsp;</td>
+        </tr>
+    </table>
+
+    <!--info section-->
+    <table class="two-columns" role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <!--left column-->
+            <td class="table-column" width="50%" valign="top" style="padding-right: 36px;">
+                <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="{{ styleInfoItem }}">
+                            <p style="{{ styleLabel }}">Invoice No.</p>
+                            <p style="{{ styleValue }}">{{ entity.invoiceNo|default('') }}</p>
+                        </td>
+                    </tr>
+
+                    {% if entity.order %}
+                        <tr>
+                            <td style="{{ styleInfoItem }}">
+                                <p style="{{ styleLabel }}">Order No.</p>
+                                <p style="{{ styleValue }}">{{ entity.order.identifier|default('') }}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    <tr>
+                        <td style="{{ styleInfoItem }}">
+                            <p style="{{ styleLabel }}">Issue Date</p>
+                            <p style="{{ styleValue }}">
+                                {{ entity.issueDate ? entity.issueDate|oro_format_date({dateType: 'short'}) : '&mdash;' }}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="{{ styleInfoItem }}">
+                            <p style="{{ styleLabel }}">Due Date</p>
+                            <p style="{{ styleValue }}">
+                                {{ entity.dueDate ? entity.dueDate|oro_format_date({dateType: 'short'}) : '&mdash;' }}
+                            </p>
+                        </td>
+                    </tr>
+
+                    {% if entity.poNumber %}
+                        <tr>
+                            <td style="{{ styleInfoItem }}">
+                                <p style="{{ styleLabel }}">PO Number</p>
+                                <p style="{{ styleValue }}">{{ entity.poNumber|default('') }}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </td>
+
+            <!--right column-->
+            <td class="table-column" width="50%" valign="top" style="padding-left: 36px;">
+                <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="{{ styleInfoItem }}">
+                            <p style="{{ styleLabel }}">Billing Address</p>
+                            <p style="{{ styleValue }}">
+                                {% if entity.billingAddressFirstName or entity.billingAddressLastName %}
+                                    {{ entity.billingAddressFirstName }} {{ entity.billingAddressLastName }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressOrganization %}
+                                    {{ entity.billingAddressOrganization }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressStreet1 %}
+                                    {{ entity.billingAddressStreet1 }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressStreet2 %}
+                                    {{ entity.billingAddressStreet2 }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressCity or entity.billingAddressState or entity.billingAddressPostalCode %}
+                                    {{ entity.billingAddressCity }}
+                                    {% if entity.billingAddressCity and entity.billingAddressState %}, {% endif %}
+                                    {{ entity.billingAddressState }}
+                                    {{ entity.billingAddressPostalCode }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressCountry %}
+                                    {{ entity.billingAddressCountry }}<br/>
+                                {% endif %}
+
+                                {% if entity.billingAddressPhone %}
+                                    {{ entity.billingAddressPhone }}
+                                {% endif %}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="{{ styleInfoItem }}">
+                            <p style="{{ styleLabel }}">Shipping Address</p>
+                            <p style="{{ styleValue }}">
+                                {% if entity.shippingAddressFirstName or entity.shippingAddressLastName %}
+                                    {{ entity.shippingAddressFirstName }} {{ entity.shippingAddressLastName }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressOrganization %}
+                                    {{ entity.shippingAddressOrganization }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressStreet1 %}
+                                    {{ entity.shippingAddressStreet1 }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressStreet2 %}
+                                    {{ entity.shippingAddressStreet2 }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressCity or entity.shippingAddressState or entity.shippingAddressPostalCode %}
+                                    {{ entity.shippingAddressCity }}
+                                    {% if entity.shippingAddressCity and entity.shippingAddressState %}, {% endif %}
+                                    {{ entity.shippingAddressState }}
+                                    {{ entity.shippingAddressPostalCode }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressCountry %}
+                                    {{ entity.shippingAddressCountry }}<br/>
+                                {% endif %}
+
+                                {% if entity.shippingAddressPhone %}
+                                    {{ entity.shippingAddressPhone }}
+                                {% endif %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!--empty space-->
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="32" style="{{ styleEmptyRowH32 }}">&nbsp;</td>
+        </tr>
+    </table>
+
+    <!--Summary table-->
+    <table class="two-columns" role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <td class="hide-on-mobile" width="50%"></td>
+
+            <td width="50%" valign="top" class="full-width-on-mobile">
+                <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+
+                    <tr>
+                        <td style="{{ styleTableTdSummary }}">Subtotal</td>
+                        <td style="{{ styleTableTdSummaryValue }}">
+                            {{ entity.subtotal|oro_format_currency({'currency': entity.currency}) }}
+                        </td>
+                    </tr>
+
+                    {% if entity.discountAmount %}
+                        <tr>
+                            <td style="{{ styleTableTdSummary }}">Discount</td>
+                            <td style="{{ styleTableTdSummaryValue }}">
+                                -{{ entity.discountAmount|oro_format_currency({'currency': entity.currency}) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    {% if entity.shippingAmount %}
+                        <tr>
+                            <td style="{{ styleTableTdSummary }}">Shipping</td>
+                            <td style="{{ styleTableTdSummaryValue }}">
+                                {{ entity.shippingAmount|oro_format_currency({'currency': entity.currency}) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    <tr>
+                        <td style="{{ styleTableTdSummary }}">Tax</td>
+                        <td style="{{ styleTableTdSummaryValue }}">
+                            {{ entity.taxAmount|oro_format_currency({'currency': entity.currency}) }}
+                        </td>
+                    </tr>
+
+                    <!--line-->
+                    <tr>
+                        <td colspan="2">
+                            <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td height="8" style="{{ styleEmptyRowH8 }}">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td height="8" style="{{ styleDividerLine }} {{ styleEmptyRowH8 }}">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="{{ styleTableTdSummary }} {{ styleTableTdBold }} padding-top: 0;">
+                            Total Due:
+                        </td>
+                        <td style="{{ styleTableTdSummaryValue }} {{ styleTableTdBold }} padding-top: 0;">
+                            {{ entity.grandTotal|oro_format_currency({'currency': entity.currency}) }}
+                        </td>
+                    </tr>
+
+                    {% if entity.amountPaid %}
+                        <tr>
+                            <td style="{{ styleTableTdSummary }}">Amount Paid</td>
+                            <td style="{{ styleTableTdSummaryValue }}">
+                                {{ entity.amountPaid|oro_format_currency({'currency': entity.currency}) }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="{{ styleTableTdSummary }} {{ styleTableTdBold }}">
+                                Balance Due:
+                            </td>
+                            <td style="{{ styleTableTdSummaryValue }} {{ styleTableTdBold }}">
+                                {{ ((((entity.grandTotal - entity.amountPaid) * 100 + 0.5) // 1) / 100)|oro_format_currency({'currency': entity.currency}) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!--empty space-->
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="32" style="{{ styleEmptyRowH32 }}">&nbsp;</td>
+        </tr>
+    </table>
+
+    <p style="{{ styleP }}">
+        If you have already made the payment, please disregard this reminder.
+        If you have any questions about this invoice, please contact us.
+    </p>
+{% endblock content %}

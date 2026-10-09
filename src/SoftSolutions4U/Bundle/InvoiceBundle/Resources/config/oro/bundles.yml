@@ -1,0 +1,2 @@
+bundles:
+    - { name: SoftSolutions4U\Bundle\InvoiceBundle\SoftSolutions4UInvoiceBundle, priority: 1000 }

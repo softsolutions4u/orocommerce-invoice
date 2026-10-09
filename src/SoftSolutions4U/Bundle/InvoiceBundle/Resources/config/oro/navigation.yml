@@ -1,0 +1,50 @@
+navigation:
+    menu_config:
+        items:
+            softsolutions4u_invoices:
+                label: softsolutions4u.invoice.entity_plural_label
+                route: softsolutions4u_invoice_index
+                extras:
+                    routes:
+                        - softsolutions4u_invoice_view
+                        - softsolutions4u_invoice_update
+
+            softsolutions4u_invoice_frontend_invoices:
+                label: softsolutions4u.invoice.navigation.view
+                route: softsolutions4u_invoice_frontend_index
+                acl_resource_id: softsolutions4u_invoice_frontend_view
+                position: 100
+                extras:
+                    routes:
+                        - softsolutions4u_invoice_frontend_index
+                        - softsolutions4u_invoice_frontend_view
+                        - softsolutions4u_invoice_frontend_payment
+
+        tree:
+            application_menu:
+                children:
+                    sales_tab:
+                        children:
+                            softsolutions4u_invoices: ~
+
+            # Storefront "My Account" menu; the sidebar only lists items inside a group.
+            oro_customer_menu_refreshing_teal:
+                children:
+                    oro_order_frontend_orders:
+                        children:
+                            softsolutions4u_invoice_frontend_invoices: ~
+
+            # Menu of the older storefront themes.
+            oro_customer_menu:
+                children:
+                    softsolutions4u_invoice_frontend_invoices: ~
+
+    titles:
+        softsolutions4u_invoice_index: 'softsolutions4u.invoice.entity_plural_label'
+        softsolutions4u_invoice_create: 'softsolutions4u.invoice.navigation.create'
+        softsolutions4u_invoice_update: 'softsolutions4u.invoice.navigation.update'
+        softsolutions4u_invoice_view: 'softsolutions4u.invoice.navigation.view_title'
+
+        softsolutions4u_invoice_frontend_index: 'softsolutions4u.invoice.entity_plural_label'
+        softsolutions4u_invoice_frontend_view: 'softsolutions4u.invoice.navigation.view'
+        softsolutions4u_invoice_frontend_payment: 'softsolutions4u.invoice.frontend.payment.actions.create.label'

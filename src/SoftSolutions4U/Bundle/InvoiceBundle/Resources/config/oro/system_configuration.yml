@@ -1,0 +1,185 @@
+system_configuration:
+    groups:
+        invoice_management:
+            title: softsolutions4u.invoice.system_configuration.groups.invoice_management.title
+            icon: fa-gear
+    fields:
+        softsolutions4u_invoice.invoices_enabled:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 100
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.invoices_enabled.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.invoices_enabled.tooltip
+        softsolutions4u_invoice.invoices_payment_methods:
+            data_type: array
+            type: SoftSolutions4U\Bundle\InvoiceBundle\Form\Type\PaymentMethodMultiSelectFormType
+            priority: 90
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.invoice_payment_methods.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.invoice_payment_methods.tooltip
+        softsolutions4u_invoice.company_name:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 30
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.company_name.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.company_name.tooltip
+                required: false
+        softsolutions4u_invoice.company_vat_number:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 25
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.company_vat_number.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.company_vat_number.tooltip
+                required: false
+        softsolutions4u_invoice.company_logo:
+            data_type: string
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigFileType
+            priority: 20
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.company_logo.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.company_logo.tooltip
+                required: false
+                fileConstraints:
+                    - Oro\Bundle\AttachmentBundle\Validator\Constraints\Image: ~
+        softsolutions4u_invoice.bank_details_enabled:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 19
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_details_enabled.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_details_enabled.tooltip
+        softsolutions4u_invoice.bank_us_enabled:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 18
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_enabled.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_us_enabled.tooltip
+        softsolutions4u_invoice.bank_us_account_holder:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 17
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_account_holder.label
+                required: false
+        softsolutions4u_invoice.bank_us_bank_name:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 16
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_bank_name.label
+                required: false
+        softsolutions4u_invoice.bank_us_routing_number:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 15
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_routing_number.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_us_routing_number.tooltip
+                required: false
+        softsolutions4u_invoice.bank_us_account_number:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 14
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_account_number.label
+                required: false
+        softsolutions4u_invoice.bank_us_swift:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 13
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_swift.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_us_swift.tooltip
+                required: false
+        softsolutions4u_invoice.bank_us_instructions:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextareaType
+            priority: 12
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_us_instructions.label
+                required: false
+        softsolutions4u_invoice.bank_de_enabled:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 11
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_enabled.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_de_enabled.tooltip
+        softsolutions4u_invoice.bank_de_account_holder:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 10
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_account_holder.label
+                required: false
+        softsolutions4u_invoice.bank_de_bank_name:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 9
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_bank_name.label
+                required: false
+        softsolutions4u_invoice.bank_de_iban:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 8
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_iban.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_de_iban.tooltip
+                required: false
+        softsolutions4u_invoice.bank_de_bic:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextType
+            priority: 7
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_bic.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.bank_de_bic.tooltip
+                required: false
+        softsolutions4u_invoice.bank_de_instructions:
+            data_type: string
+            type: Symfony\Component\Form\Extension\Core\Type\TextareaType
+            priority: 6
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.bank_de_instructions.label
+                required: false
+        softsolutions4u_invoice.auto_create_for_payment_term:
+            data_type: boolean
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            priority: 80
+            options:
+                label: softsolutions4u.invoice.system_configuration.fields.auto_create_for_payment_term.label
+                tooltip: softsolutions4u.invoice.system_configuration.fields.auto_create_for_payment_term.tooltip
+    tree:
+        system_configuration:
+            commerce:
+                children:
+                    orders:
+                        children:
+                            invoice_management:
+                                children:
+                                    invoice_management:
+                                        children:
+                                            - softsolutions4u_invoice.invoices_enabled
+                                            - softsolutions4u_invoice.invoices_payment_methods
+                                            - softsolutions4u_invoice.company_name
+                                            - softsolutions4u_invoice.company_vat_number
+                                            - softsolutions4u_invoice.company_logo
+                                            - softsolutions4u_invoice.auto_create_for_payment_term
+                                            - softsolutions4u_invoice.bank_details_enabled
+                                            - softsolutions4u_invoice.bank_us_enabled
+                                            - softsolutions4u_invoice.bank_us_account_holder
+                                            - softsolutions4u_invoice.bank_us_bank_name
+                                            - softsolutions4u_invoice.bank_us_routing_number
+                                            - softsolutions4u_invoice.bank_us_account_number
+                                            - softsolutions4u_invoice.bank_us_swift
+                                            - softsolutions4u_invoice.bank_us_instructions
+                                            - softsolutions4u_invoice.bank_de_enabled
+                                            - softsolutions4u_invoice.bank_de_account_holder
+                                            - softsolutions4u_invoice.bank_de_bank_name
+                                            - softsolutions4u_invoice.bank_de_iban
+                                            - softsolutions4u_invoice.bank_de_bic
+                                            - softsolutions4u_invoice.bank_de_instructions

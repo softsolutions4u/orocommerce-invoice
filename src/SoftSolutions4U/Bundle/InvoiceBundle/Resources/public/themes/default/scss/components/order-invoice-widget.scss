@@ -1,0 +1,78 @@
+// This file is part of the SoftSolutions4U OroCommerce Invoice bundle.
+//
+// @category  SoftSolutions4U
+// @package   SoftSolutions4U\Bundle\InvoiceBundle
+// @author    Pradeep Elayaraja
+// @author    Ganesh
+// @copyright 2026 SoftSolutions4U
+// @license   https://www.gnu.org/licenses/gpl-3.0.html GPL-3.0-only
+// @link      https://www.softsolutions4u.com/
+
+.order-invoice-datagrid {
+  .grid-body-cell {
+    vertical-align: middle;
+  }
+
+  @include breakpoint('tablet') {
+    .grid-row {
+      columns: 200px 2;
+    }
+
+    .grid {
+      &-body-cell {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        &:before {
+          content: attr(data-column-label) ': ';
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  @include breakpoint('mobile-landscape') {
+    .grid-body-cell-invoiceStatusId span {
+      text-align: right;
+    }
+
+    .grid {
+      &-body-cell {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        &:before {
+          content: attr(data-column-label) ': ';
+          display: inline-block;
+        }
+      }
+    }
+
+    .grid-row.has-actions {
+      padding-right: 0 !important; // action adding transition that I can't remove
+      margin-right: 0 !important; // action adding transition that I can't remove
+    }
+
+    .grid-body-cell.action-cell {
+      position: relative;
+      display: none;
+    }
+  }
+}
+
+@include breakpoint('tablet') {
+  .order-checkout-widget__container--fixed-width {
+    width: 100%;
+  }
+}
+
+
+@include breakpoint('mobile-landscape') {
+  .order-invoice-widget {
+    width: 100%;
+    clear: both;
+    margin-bottom: 2rem;
+  }
+}

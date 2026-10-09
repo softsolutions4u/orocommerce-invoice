@@ -1,0 +1,62 @@
+layout:
+    imports:
+        -
+            id: oro_customer_page
+        -
+            id: softsolutions4u_invoice_payment_form
+            root: page_content
+
+    actions:
+        # Reuses the view page's header blocks so the back arrow and title match.
+        - '@setBlockTheme':
+            themes:
+                - '@SoftSolutions4UInvoice/layouts/default/softsolutions4u_invoice_frontend_view/layout.html.twig'
+
+        # The custom header below renders the title, so drop the stock one.
+        - '@remove':
+            id: page_title_container
+
+        - '@addTree':
+            items:
+                invoice_page_header:
+                    blockType: container
+
+                invoice_header_left:
+                    blockType: container
+
+                invoice_back_link:
+                    blockType: link
+                    options:
+                        visible: '=data["acl"].isGranted("softsolutions4u_invoice_frontend_view")'
+                        route_name: softsolutions4u_invoice_frontend_index
+                        text: 'softsolutions4u.invoice.frontend.invoice_link.text'
+                        vars:
+                            labelClass: 'sr-only'
+                        attr:
+                            'class': 'btn btn--neutral hide-on-print'
+
+                invoice_payment_page_title:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.frontend.payment.title.label'
+
+            tree:
+                page_content:
+                    invoice_page_header:
+                        invoice_header_left:
+                            invoice_back_link: ~
+                            invoice_payment_page_title: ~
+
+        # addTree appends, so the header lands after the form; move it to the front.
+        - '@move':
+            id: invoice_page_header
+            parentId: page_content
+            prepend: true
+
+        - '@addTree':
+            items:
+                invoice_breadcrumbs:
+                    blockType: container
+            tree:
+                page_main_header:
+                    invoice_breadcrumbs: ~
