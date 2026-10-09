@@ -1,0 +1,487 @@
+softsolutions4u:
+  invoice:
+    entity_label: Rechnung
+    entity_plural_label: Rechnungen
+    statuses:
+      draft: Entwurf
+      posted: Gebucht
+      open: Offen
+      overdue: Überfällig
+      paid: Bezahlt
+      partially_paid: Teilweise bezahlt
+      cancelled: Storniert
+    payment_statuses:
+      pending: Ausstehend
+      partially: Teilweise bezahlt
+      full: Vollständig bezahlt
+    datetime:
+      future: in %time%
+      past: vor %time%
+    process:
+      set_overdue:
+        label: Rechnungen als überfällig markieren
+    entity_grid_all_view_label: Alle %entity_plural_label%
+    id.label: ID
+    invoice_no.label: Rechnungsnr.
+    customer.label: Kunde
+    issue_date.label: Rechnungsdatum
+    due_date.label: Fälligkeitsdatum
+    vat_number.label: USt-IdNr.
+    payable_by.label: Zahlbar bis
+    amount.label: Betrag
+    subtotal.label: Zwischensumme
+    discount.label: Rabatt
+    shipping_amount.label: Versand
+    tax_total.label: Steuer gesamt
+    grand_total.label: Gesamtsumme
+    currency.label: Währung
+    amount_paid.label: Bezahlter Betrag
+    line_items.label: Rechnungspositionen
+    status.label: Rechnungsstatus
+    balance.label: Restbetrag
+    payment_status.label: Zahlungsstatus
+    po_number.label: Bestellnummer des Kunden
+    order_id.label: Bestell-ID
+    order_number.label: Bestellnummer
+    order_number.short_label: 'Bestellung #'
+    invoice_date.label: Rechnungsdatum
+    billing_address.label: Rechnungsadresse
+    shipping_address.label: Lieferadresse
+    shipping.label: Versand
+    tax.label: Steuer
+    notes.label: Notizen
+    notes.placeholder: Rechnungsnotizen hinzufügen ...
+    activity.label: Aktivität
+    activity.placeholder: Für diese Rechnung wurde noch keine Aktivität erfasst.
+    create.title: Rechnung erstellen
+    invoice_no.auto_generate: Automatisch erzeugen
+    status.draft: Entwurf
+    payment_success: Ihre Zahlung war erfolgreich
+    ui.placeholder_text: Nicht verfügbar
+    ui.not_available: k. A.
+    address:
+      name.label: Name
+      first_name.label: Vorname
+      last_name.label: Nachname
+      organization.label: Organisation
+      street1.label: Straße 1
+      street2.label: Straße 2
+      city.label: Stadt
+      state.label: Bundesland
+      postal_code.label: Postleitzahl
+      country.label: Land
+      phone.label: Telefon
+    payments:
+      empty.message: Es sind keine Rechnungszahlungen vorhanden
+    invoicelineitem:
+      entity_label: Rechnungsposition
+      entity_plural_label: Rechnungspositionen
+      id.label: ID
+      invoice.label: Rechnung
+      amount.label: Betrag
+      currency.label: Währung
+      summary.label: Zusammenfassung
+      sku.label: Artikelnummer
+      product.label: Produkt
+      product.placeholder: Produkt auswählen
+      description.label: Beschreibung
+      quantity.label: Menge
+      unit_price.label: Einzelpreis
+      total.label: Gesamt
+      remove.label: Entfernen
+    invoicepayment:
+      entity_label: Rechnungszahlung
+      entity_plural_label: Rechnungszahlungen
+      id.label: ID
+      payment_method.label: Zahlungsart
+      amount.label: Betrag
+      total.label: Gesamt
+      currency.label: Währung
+      line_items.label: Rechnungen
+      subtotal.label: Zwischensumme
+    invoicepaymentlineitem:
+      entity_label: Zahlungsposition der Rechnung
+      entity_plural_label: Zahlungspositionen der Rechnung
+      id.label: ID
+      invoice.label: Rechnung
+      invoice_payment.label: Rechnungszahlung
+      amount.label: Betrag
+      currency.label: Währung
+    system_configuration:
+      groups:
+        invoice_management:
+          title: Rechnungsverwaltung
+      fields:
+        invoices_enabled:
+          label: Rechnungen aktivieren
+          tooltip: Rechnungen aktivieren
+          description: Rechnungen aktivieren
+        invoice_payment_methods:
+          label: Zahlungsarten
+          tooltip: Zahlungsarten
+          description: Zahlungsarten
+        company_name:
+          label: Firmenname
+          tooltip: Der auf Rechnungs-PDFs gedruckte Firmenname.
+        company_vat_number:
+          label: USt-IdNr.
+          tooltip: Die Umsatzsteuer-Identifikationsnummer Ihres Unternehmens, gedruckt auf Rechnungs-PDFs. Leer lassen, um sie auszublenden.
+        company_logo:
+          label: Firmenlogo
+          tooltip: Logo am oberen Rand der Rechnungs-PDFs. Empfohlene maximale Höhe
+            80px.
+        bank_details_enabled:
+          label: Zahlungshinweise auf Rechnungs-PDF anzeigen
+          tooltip: Druckt Bankverbindung und Zahlungshinweise am Ende des Rechnungs-PDFs.
+        bank_us_enabled:
+          label: US-Bankkonto aktivieren
+          tooltip: Wird für Rechnungen in USD verwendet.
+        bank_us_account_holder:
+          label: US-Kontoinhaber
+        bank_us_bank_name:
+          label: US-Bankname
+        bank_us_routing_number:
+          label: US-Bankleitzahl (ABA)
+          tooltip: Neunstellige ABA-Bankleitzahl für inländische ACH- und Überweisungen.
+        bank_us_account_number:
+          label: US-Kontonummer
+        bank_us_swift:
+          label: US-SWIFT / BIC
+          tooltip: Erforderlich für Überweisungen aus dem Ausland.
+        bank_us_instructions:
+          label: US-Zahlungshinweise
+        bank_de_enabled:
+          label: Deutsches Bankkonto aktivieren
+          tooltip: Wird für Rechnungen in EUR verwendet.
+        bank_de_account_holder:
+          label: Deutscher Kontoinhaber
+        bank_de_bank_name:
+          label: Deutscher Bankname
+        bank_de_iban:
+          label: Deutsche IBAN
+          tooltip: Internationale Bankkontonummer für SEPA-Überweisungen.
+        bank_de_bic:
+          label: Deutscher BIC
+          tooltip: Bankleitzahl-Code, auch SWIFT-Code genannt.
+        bank_de_instructions:
+          label: Deutsche Zahlungshinweise
+        auto_create_for_payment_term:
+          label: Rechnungen für Bestellungen mit Zahlungsziel automatisch erstellen
+          tooltip: Wenn aktiviert, wird für Bestellungen mit der Zahlungsart Zahlungsziel
+            automatisch eine Rechnung im Status ENTWURF erstellt. Entwürfe werden
+            erst nach dem Buchen an den Kunden gesendet.
+    navigation:
+      view: Rechnungen
+      view_title: Rechnung %invoiceNo%
+      create: Rechnung erstellen
+      update: Rechnung %invoiceNo% bearbeiten
+    summary:
+      title: Zusammenfassung
+    order:
+      action:
+        create.label: Rechnung erstellen
+      create:
+        placeholder:
+          title: Rechnung erstellen
+          message: 'Die Rechnungserstellung für Bestellung #%orderId% ist noch nicht
+            verfügbar.'
+      tab:
+        invoices:
+          label: Rechnungen
+    frontend:
+      invoice:
+        identifier.label: 'Rechnung #%identifier%'
+        toolbar-actions:
+          btn:
+            print: Rechnung drucken
+            download: Herunterladen
+      invoice_link.text: < Zurück zur Rechnungsliste
+      breadcrumbs:
+        home.label: Startseite
+        my_account.label: Mein Konto
+        view.label: Ansicht
+        label: Navigationspfad
+      grid:
+        page_title.label: Rechnungsverlauf
+        outstanding.label: Offene Rechnungen
+        paid.label: Bezahlte Rechnungen
+        cancelled.label: Stornierte Rechnungen
+        empty.label: Sie haben noch keine Rechnungen.
+        invoice_date.label: Rechnungsdatum
+        total_amount.label: Gesamtbetrag
+        payment_status.label: Zahlungsstatus
+        assigned_to.label: Zugewiesen an
+        bill_to.label: Rechnung an
+        ship_to.label: Lieferung an
+        actions.label: Aktionen
+      payment:
+        line_items:
+          payment_amount.label: Zu zahlender Betrag
+        payment_method.label: Zahlungsart auswählen
+        actions:
+          create.label: Jetzt bezahlen
+          process.label: Jetzt bezahlen
+          cancel.label: Abbrechen
+        title.label: Rechnung bezahlen
+        success.message: Ihre Zahlung war erfolgreich
+        pending.message: Ihre Zahlung ist eingegangen und wartet auf Bestätigung.
+        failed.message: Ihre Zahlung war nicht erfolgreich, bitte versuchen Sie es
+          erneut
+        inactive.message: Die Zahlung wurde bereits als abgeschlossen markiert, bitte
+          versuchen Sie es erneut
+        not_payable.message: Diese Rechnung steht derzeit nicht zur Zahlung bereit
+        summary:
+          payment_amount.label: Zahlungsbetrag
+          amount_paid.label: Bereits bezahlt
+          pending_amount.label: Offener Rechnungsbetrag
+          grand_total.label: Rechnungsbetrag gesamt
+        errors:
+          no_unpaid_invoices: Derzeit erfordern keine Rechnungen eine Zahlung.
+          multi_currency: Zahlungen in mehreren Währungen werden nicht unterstützt.
+          no_customer_user: Der Kundenbenutzer für diese Zahlung konnte nicht ermittelt werden.
+          no_invoice: Für die Zahlung muss eine Rechnung ausgewählt werden.
+          no_payment_method: Bitte wählen Sie eine Zahlungsart aus.
+          amount_not_positive: Geben Sie einen Zahlungsbetrag größer als null ein.
+          amount_exceeds_balance: Der Zahlungsbetrag darf den offenen Betrag von %currency%
+            %balance% nicht überschreiten.
+        save_state_failed.message: Der Zahlungsstatus konnte nicht gespeichert werden,
+          bitte versuchen Sie es erneut
+        action_failed.message: Die Aktion konnte nicht abgeschlossen werden, bitte
+          versuchen Sie es erneut
+        processing_failed.message: Bei der Verarbeitung Ihrer Zahlung ist ein Fehler
+          aufgetreten
+      line_item:
+        sku.label: Artikelnummer
+        product.label: Produkt
+        unit.label: Einheit
+        quantity.label: Menge
+        unit_price.label: Einzelpreis
+        discount.label: Rabatt
+        tax.label: Steuer
+        subtotal.label: Zwischensumme
+        total.label: Gesamt
+        unit_singular.label: Artikel
+        unit_plural.label: Artikel
+        actions:
+          view.label: Produkt ansehen
+      line_items:
+        empty.message: Diese Rechnung enthält keine Positionen.
+        pagination:
+          previous.label: Vorherige Seite
+          next.label: Nächste Seite
+          of.label: von
+        filter:
+          label: Suchen
+          placeholder: Nach Produktname oder Artikelnummer suchen
+          submit.label: Suchen
+          clear.label: Zurücksetzen
+          no_results.label: Keine Positionen entsprechen Ihrer Suche.
+    sections:
+      general.label: Allgemein
+      addresses.label: Adressen
+      line_items.label: Rechnungspositionen
+      payments.label: Rechnungszahlungen
+      information.label: Rechnungsinformationen
+      summary.label: Zusammenfassung
+      actions.label: Aktionen
+      billing_address.label: Rechnungsadresse
+      shipping_address.label: Lieferadresse
+      notes.label: Notizen
+      totals.label: Summen
+      general_information: Allgemeine Informationen
+    privilege:
+      category:
+        invoice:
+          label: Rechnung
+    acl:
+      post:
+        label: An Kunden senden
+      download_pdf:
+        label: PDF herunterladen
+      add_note:
+        label: Notiz zur Rechnung hinzufügen
+      send_reminder:
+        label: Zahlungserinnerung senden
+      send_payment_confirmation:
+        label: Zahlungsbestätigung senden
+      cancel:
+        label: Rechnung stornieren
+      frontend_view:
+        label: Rechnungen ansehen
+      confirm_payment:
+        label: Zahlung bestätigen
+      view:
+        label: Rechnung ansehen
+      create:
+        label: Rechnung erstellen
+      update:
+        label: Rechnung bearbeiten
+      delete:
+        label: Rechnung löschen
+    reference:
+      label: Referenz
+      close: Schließen
+      download: Herunterladen
+      unavailable: Noch nicht verfügbar
+      video:
+        label: Video-Referenz
+        title: Video-Referenz
+        unsupported: Ihr Browser unterstützt kein HTML5-Video.
+        error: Das Video konnte nicht abgespielt werden. Prüfen Sie, ob die Datei im Ordner
+          Reference ein unterstütztes Format hat.
+      document:
+        label: Dokument-Referenz
+        title: Dokument-Referenz
+        preview_unavailable: Für diesen Dateityp ist im Browser keine Vorschau verfügbar.
+          Verwenden Sie Herunterladen, um die Datei zu öffnen.
+    actions:
+      send_to_customer:
+        label: An Kunden senden
+        confirmation: Um diese Rechnung an den Kunden zu senden, muss sie zuerst gebucht
+          werden. Nach dem Buchen kann die Rechnung nicht mehr geändert werden.
+      download_pdf:
+        label: PDF herunterladen
+      preview_pdf:
+        label: Vorschau
+        title: Rechnungsvorschau
+        close: Schließen
+        error: Die Rechnungsvorschau konnte nicht geladen werden. Details finden Sie
+          in den Protokollen.
+      send_reminder:
+        label: Erinnerung senden
+        title: Zahlungserinnerung senden
+        confirmation: Dem Kunden wird eine E-Mail mit einer Erinnerung an den offenen
+          Betrag dieser Rechnung gesendet.
+      send_payment_confirmation:
+        label: Zahlungsbestätigung
+        title: Zahlungsbestätigung senden
+        confirmation: Diese Rechnung ist vollständig bezahlt. Dem Kunden wird eine
+          Zahlungsbestätigung per E-Mail gesendet.
+      cancel_invoice:
+        label: Rechnung stornieren
+        title: Rechnung stornieren
+        confirmation: 'Die Rechnung wird endgültig storniert und der Kunde per E-Mail benachrichtigt. Danach ist sie nicht mehr bearbeitbar, versendbar oder bezahlbar; bereits erhaltene Zahlungen werden nicht automatisch erstattet.'
+      resend_cancellation:
+        label: Stornobenachrichtigung erneut senden
+        title: Stornobenachrichtigung erneut senden
+        confirmation: Dem Kunden wird die Stornobenachrichtigung für diese Rechnung
+          erneut per E-Mail gesendet.
+      create:
+        label: Rechnung erstellen
+      save_draft:
+        label: Entwurf speichern
+      cancel:
+        label: Abbrechen
+      proceed:
+        label: Fortfahren
+      add_note:
+        label: Notiz hinzufügen
+      confirm_payment:
+        label: Zahlung bestätigen
+        title: Zahlung bestätigen
+        confirmation: 'Damit bestätigen Sie, dass die ausstehende Offline-Zahlung eingegangen ist, und der Rechnungssaldo wird aktualisiert.'
+      confirmation:
+        title: Aktion bestätigen
+        message: Möchten Sie wirklich fortfahren?
+    messages:
+      no_recipient: Diese Rechnung hat keinen Kundenbenutzer mit E-Mail-Adresse als Empfänger.
+      email_send_error: Die E-Mail konnte nicht gesendet werden. Details finden Sie in den Protokollen.
+      already_posted: Diese Rechnung wurde bereits gebucht.
+      reminder_paid_in_full: Diese Rechnung ist vollständig bezahlt, daher ist keine Zahlungserinnerung erforderlich.
+      confirmation_balance_outstanding: Diese Rechnung hat noch einen offenen Saldo, daher kann keine Zahlungsbestätigung gesendet werden.
+      send_reminder_sent_to: Zahlungserinnerung an %email% gesendet.
+      send_payment_confirmation_sent_to: Zahlungsbestätigung an %email% gesendet.
+      no_pending_payments: Für diese Rechnung gibt es keine ausstehenden Zahlungen zu bestätigen.
+      confirm_payment_success: Zahlung bestätigt.
+      payment_awaiting_confirmation: Eine Zahlung für diese Rechnung wartet auf Bestätigung.
+      post_error: Die Rechnung konnte nicht gebucht werden. Details finden Sie in
+        den Protokollen.
+      send_reminder_success: Zahlungserinnerung an den Kunden gesendet.
+      send_reminder_error: Die Zahlungserinnerung konnte nicht gesendet werden. Details
+        finden Sie in den Protokollen.
+      send_payment_confirmation_success: Zahlungsbestätigung an den Kunden gesendet.
+      send_payment_confirmation_error: Die Zahlungsbestätigung konnte nicht gesendet
+        werden. Details finden Sie in den Protokollen.
+      add_note:
+        label: Notiz hinzufügen
+      send_email:
+        label: E-Mail senden
+      create_success: Rechnung %invoiceNo% wurde erfolgreich erstellt. <a href="%url%">Rechnung
+        ansehen</a>
+      create_success_short: Rechnung %invoiceNo% wurde erfolgreich erstellt.
+      update_success: Rechnung erfolgreich aktualisiert.
+      post_success: Rechnung gebucht und an den Kunden gesendet.
+      post_email_error: Die Rechnung wurde gebucht, die Benachrichtigungs-E-Mail konnte
+        jedoch nicht gesendet werden. Details finden Sie in den Protokollen.
+      resend_cancellation_success: Stornobenachrichtigung an den Kunden gesendet.
+      resend_cancellation_error: Die Stornobenachrichtigung konnte nicht gesendet werden.
+        Details finden Sie in den Protokollen.
+      resend_cancellation_not_cancelled: Diese Rechnung ist nicht storniert, es gibt
+        daher keine Stornobenachrichtigung zu senden.
+      cancel_success: Rechnung storniert.
+      cancel_error: Die Rechnung konnte nicht storniert werden. Details finden Sie
+        in den Protokollen.
+      cancel_already_cancelled: Diese Rechnung wurde bereits storniert.
+      post_cancelled: Diese Rechnung wurde storniert und kann nicht mehr an den Kunden
+        gesendet werden.
+      post_order_cancelled: Die zugehörige Bestellung wurde storniert. Die Rechnung
+        wurde daher storniert, anstatt an den Kunden gesendet zu werden.
+      posted_readonly: Diese Rechnung wurde gebucht und kann nicht mehr geändert werden.
+      cancelled_readonly: Diese Rechnung wurde storniert und kann nicht mehr geändert
+        werden.
+      already_draft: Für diese Bestellung existiert bereits ein Rechnungsentwurf.
+        Löschen Sie ihn, bevor Sie einen neuen erstellen.
+      already_created: Für diese Bestellung wurde bereits eine Rechnung erstellt.
+      create_error: Die Rechnung konnte nicht erstellt werden. Details stehen im Anwendungsprotokoll.
+      order_cancelled: Diese Bestellung wurde storniert. Für eine stornierte Bestellung
+        kann keine Rechnung erstellt werden.
+      delete_has_payments: Diese Rechnung kann nicht gelöscht werden, da Zahlungen
+        erfasst wurden.
+      delete_not_draft: Diese Rechnung kann nicht gelöscht werden, da sie nicht im
+        Status Entwurf ist.
+    details:
+      title.label: Rechnungsdetails
+      owner.label: Eigentümer
+      change_history.label: Änderungsverlauf
+      customer_user.label: Kundenbenutzer
+      order.label: Bestellung
+      seller_information.label: Verkäuferinformationen
+      bill_to_address.label: Rechnungsadresse
+      ship_to_address.label: Lieferadresse
+      payment_method.label: Zahlungsart
+      payment_status.label: Zahlungsstatus
+      internal_status.label: Interner Status
+      website.label: Website
+      guest_payment_link.label: Zahlungslink für Gäste
+      memo.label: Notiz
+      description.placeholder: Die Rechnungsbeschreibung wird hier angezeigt.
+      activity.placeholder: Platzhalter für den Aktivitätsstrom. Das Oro-Aktivitäts-Widget
+        wird später integriert.
+      status.placeholder: Unbekannt
+      tabs:
+        general: Allgemeine Informationen
+        description: Beschreibung
+        line_items: Positionen
+        payments: Zahlungen
+        activity: Aktivität
+    payment:
+      type.label: Typ
+      successful.label: Erfolgreich
+    bank:
+      title: Zahlungshinweise
+      account_holder.label: Kontoinhaber
+      bank_name.label: Bank
+      routing_number.label: Bankleitzahl (ABA)
+      account_number.label: Kontonummer
+      swift.label: SWIFT / BIC
+      iban.label: IBAN
+      bic.label: BIC
+      reference.label: Referenz
+      reference.note: 'Bitte geben Sie bei der Überweisung die Referenz %reference% an, damit wir sie dieser Rechnung zuordnen können.'
+      amount_due.label: Offener Betrag
+      transfer.label: Zahlung per Banküberweisung
+      online:
+        label: Online bezahlen
+        description: Begleichen Sie diese Rechnung in Ihrem Konto per Karte oder gespeicherter
+          Zahlungsart.
+        cta: Rechnung online bezahlen

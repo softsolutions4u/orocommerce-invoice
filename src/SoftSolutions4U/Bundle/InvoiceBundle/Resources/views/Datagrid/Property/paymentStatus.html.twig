@@ -1,0 +1,3 @@
+{% set code = record.getValue('paymentStatus') %}
+
+{{ code ? get_payment_status_label(code) : 'softsolutions4u.invoice.ui.not_available'|trans }}

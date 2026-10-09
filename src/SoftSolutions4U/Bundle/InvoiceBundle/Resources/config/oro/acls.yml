@@ -1,0 +1,25 @@
+acls:
+    softsolutions4u_invoice_cancel:
+        label: softsolutions4u.invoice.acl.cancel.label
+        type: action
+        category: invoice
+
+    softsolutions4u_invoice_add_note:
+        label: softsolutions4u.invoice.acl.add_note.label
+        type: action
+        category: invoice
+
+    softsolutions4u_invoice_confirm_payment:
+        label: softsolutions4u.invoice.acl.confirm_payment.label
+        type: action
+        category: invoice
+
+    softsolutions4u_invoice_frontend_view:
+        label: softsolutions4u.invoice.acl.frontend_view.label
+        type: action
+        group_name: commerce
+        category: invoice
+        bindings:
+            -
+                class: SoftSolutions4U\Bundle\InvoiceBundle\Controller\Frontend\FrontendInvoiceController
+                method: indexAction

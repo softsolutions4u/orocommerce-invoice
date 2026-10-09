@@ -1,0 +1,3 @@
+{% set qty = record.getValue('qty') %}
+{{ qty }}
+{{ qty == 1 ? 'softsolutions4u.invoice.frontend.line_item.unit_singular.label'|trans : 'softsolutions4u.invoice.frontend.line_item.unit_plural.label'|trans }}

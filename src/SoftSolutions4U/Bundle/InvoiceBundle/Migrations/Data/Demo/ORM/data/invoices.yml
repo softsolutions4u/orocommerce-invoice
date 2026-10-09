@@ -1,0 +1,410 @@
+# Demo invoices, one per lifecycle stage.
+
+SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice:
+    paid_invoice:
+        customer: '@invoice_customer_a'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-62 days"))->format("Y-m"), 1))>'
+        status: 'posted'
+        paymentStatus: 'full'
+        issueDate: '<date_create("-62 days")>'
+        dueDate: '<date_create("-32 days")>'
+        postedAt: '<date_create("-62 days")>'
+        poNumber: 'PO-48213'
+        memo: 'Paid in full by EFT. Remittance received.'
+        currency: 'AUD'
+        subtotal: 1218.00
+        discountAmount: 0.00
+        taxAmount: 123.62
+        shippingAmount: 18.18
+        grandTotal: 1359.80
+        amount: 1359.80
+        amountPaid: 1359.80
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer A'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer A'
+
+    partially_paid_invoice:
+        customer: '@invoice_customer_b'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-54 days"))->format("Y-m"), 2))>'
+        status: 'overdue'
+        paymentStatus: 'partially'
+        issueDate: '<date_create("-54 days")>'
+        dueDate: '<date_create("-24 days")>'
+        postedAt: '<date_create("-54 days")>'
+        poNumber: 'PO-48377'
+        memo: 'Part payment received. Balance overdue.'
+        currency: 'AUD'
+        subtotal: 2255.90
+        discountAmount: 50.00
+        taxAmount: 223.05
+        shippingAmount: 24.55
+        grandTotal: 2453.50
+        amount: 2453.50
+        amountPaid: 981.40
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer B'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer B'
+
+    overdue_invoice:
+        customer: '@invoice_customer_a'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-41 days"))->format("Y-m"), 3))>'
+        status: 'overdue'
+        paymentStatus: 'pending'
+        issueDate: '<date_create("-41 days")>'
+        dueDate: '<date_create("-11 days")>'
+        postedAt: '<date_create("-41 days")>'
+        poNumber: 'PO-48512'
+        memo: 'Second reminder sent. No payment received to date.'
+        currency: 'AUD'
+        subtotal: 992.00
+        discountAmount: 25.00
+        taxAmount: 96.70
+        shippingAmount: 0.00
+        grandTotal: 1063.70
+        amount: 1063.70
+        amountPaid: 0.00
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer A'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer A'
+
+    open_invoice:
+        customer: '@invoice_customer_b'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-21 days"))->format("Y-m"), 4))>'
+        status: 'open'
+        paymentStatus: 'pending'
+        issueDate: '<date_create("-21 days")>'
+        dueDate: '<date_create("+9 days")>'
+        postedAt: '<date_create("-21 days")>'
+        poNumber: 'PO-48690'
+        memo: 'Payment due within terms.'
+        currency: 'AUD'
+        subtotal: 2779.20
+        discountAmount: 120.00
+        taxAmount: 269.19
+        shippingAmount: 32.73
+        grandTotal: 2961.12
+        amount: 2961.12
+        amountPaid: 0.00
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer B'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer B'
+
+    recent_invoice:
+        customer: '@invoice_customer_a'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-6 days"))->format("Y-m"), 5))>'
+        status: 'open'
+        paymentStatus: 'pending'
+        issueDate: '<date_create("-6 days")>'
+        dueDate: '<date_create("+24 days")>'
+        postedAt: '<date_create("-6 days")>'
+        poNumber: 'PO-48804'
+        memo: 'Issued on 30 day terms.'
+        currency: 'AUD'
+        subtotal: 1755.70
+        discountAmount: 0.00
+        taxAmount: 176.98
+        shippingAmount: 14.09
+        grandTotal: 1946.77
+        amount: 1946.77
+        amountPaid: 0.00
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer A'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer A'
+
+    draft_invoice:
+        customer: '@invoice_customer_b'
+        invoiceNo: '<(sprintf("INV-%s-%05d", (new \DateTime("-1 days"))->format("Y-m"), 6))>'
+        status: 'draft'
+        paymentStatus: 'pending'
+        issueDate: '<date_create("-1 days")>'
+        dueDate: '<date_create("+29 days")>'
+        poNumber: 'PO-48851'
+        memo: 'Draft pending internal approval. Not yet issued to customer.'
+        currency: 'AUD'
+        subtotal: 858.00
+        discountAmount: 0.00
+        taxAmount: 85.80
+        shippingAmount: 0.00
+        grandTotal: 943.80
+        amount: 943.80
+        amountPaid: 0.00
+        billingAddressFirstName: 'Alex'
+        billingAddressLastName: 'Whitfield'
+        billingAddressPhone: '+61 8 5550 0100'
+        billingAddressStreet1: 'Level 4, 100 Example Street'
+        billingAddressCity: 'Adelaide'
+        billingAddressState: 'SA'
+        billingAddressPostalCode: '5000'
+        billingAddressCountry: 'AU'
+        billingAddressOrganization: 'Invoice Customer B'
+        shippingAddressFirstName: 'Dana'
+        shippingAddressLastName: 'Okonkwo'
+        shippingAddressPhone: '+61 8 5550 0118'
+        shippingAddressStreet1: 'Unit 7, 25 Sample Road'
+        shippingAddressStreet2: 'Loading Dock B'
+        shippingAddressCity: 'Example Park'
+        shippingAddressState: 'SA'
+        shippingAddressPostalCode: '5096'
+        shippingAddressCountry: 'AU'
+        shippingAddressOrganization: 'Invoice Customer B'
+
+SoftSolutions4U\Bundle\InvoiceBundle\Entity\InvoiceLineItem:
+    paid_invoice_line_item_1:
+        invoice: '@paid_invoice'
+        productSku: '4CX789'
+        productName: 'Heavy Duty Steel Shelving Unit 1800mm'
+        summary: 'Heavy Duty Steel Shelving Unit 1800mm'
+        quantity: 4
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 249.00
+        subtotal: 996.00
+        discountAmount: 0.00
+        taxAmount: 99.60
+        total: 1095.60
+        sortOrder: 0
+
+    paid_invoice_line_item_2:
+        invoice: '@paid_invoice'
+        productSku: '9GG002'
+        productName: 'Galvanised Storage Bin 30L'
+        summary: 'Galvanised Storage Bin 30L'
+        quantity: 12
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 18.50
+        subtotal: 222.00
+        discountAmount: 0.00
+        taxAmount: 22.20
+        total: 244.20
+        sortOrder: 1
+
+    partially_paid_invoice_line_item_1:
+        invoice: '@partially_paid_invoice'
+        productSku: '5TG101'
+        productName: 'Industrial Workbench 2400 x 750mm'
+        summary: 'Industrial Workbench 2400 x 750mm'
+        quantity: 2
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 685.00
+        subtotal: 1370.00
+        discountAmount: 50.00
+        taxAmount: 132.00
+        total: 1452.00
+        sortOrder: 0
+
+    partially_paid_invoice_line_item_2:
+        invoice: '@partially_paid_invoice'
+        productSku: '1HH334'
+        productName: 'Anti-Fatigue Floor Mat 900 x 1500mm'
+        summary: 'Anti-Fatigue Floor Mat 900 x 1500mm'
+        quantity: 6
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 76.40
+        subtotal: 458.40
+        discountAmount: 0.00
+        taxAmount: 45.84
+        total: 504.24
+        sortOrder: 1
+
+    partially_paid_invoice_line_item_3:
+        invoice: '@partially_paid_invoice'
+        productSku: '2KM887'
+        productName: 'Cable Management Tray 3m'
+        summary: 'Cable Management Tray 3m'
+        quantity: 10
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 42.75
+        subtotal: 427.50
+        discountAmount: 0.00
+        taxAmount: 42.75
+        total: 470.25
+        sortOrder: 2
+
+    overdue_invoice_line_item_1:
+        invoice: '@overdue_invoice'
+        productSku: '7BC410'
+        productName: 'Safety Helmet - White (Carton of 10)'
+        summary: 'Safety Helmet - White (Carton of 10)'
+        quantity: 3
+        productUnitCode: 'carton'
+        currency: 'AUD'
+        value: 189.00
+        subtotal: 567.00
+        discountAmount: 0.00
+        taxAmount: 56.70
+        total: 623.70
+        sortOrder: 0
+
+    overdue_invoice_line_item_2:
+        invoice: '@overdue_invoice'
+        productSku: '7BC418'
+        productName: 'Hi-Vis Safety Vest - Large (Carton of 25)'
+        summary: 'Hi-Vis Safety Vest - Large (Carton of 25)'
+        quantity: 2
+        productUnitCode: 'carton'
+        currency: 'AUD'
+        value: 212.50
+        subtotal: 425.00
+        discountAmount: 25.00
+        taxAmount: 40.00
+        total: 440.00
+        sortOrder: 1
+
+    open_invoice_line_item_1:
+        invoice: '@open_invoice'
+        productSku: '3PL220'
+        productName: 'Pallet Racking Beam 2700mm'
+        summary: 'Pallet Racking Beam 2700mm'
+        quantity: 16
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 94.20
+        subtotal: 1507.20
+        discountAmount: 0.00
+        taxAmount: 150.72
+        total: 1657.92
+        sortOrder: 0
+
+    open_invoice_line_item_2:
+        invoice: '@open_invoice'
+        productSku: '3PL221'
+        productName: 'Pallet Racking Upright Frame 4000mm'
+        summary: 'Pallet Racking Upright Frame 4000mm'
+        quantity: 4
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 318.00
+        subtotal: 1272.00
+        discountAmount: 120.00
+        taxAmount: 115.20
+        total: 1267.20
+        sortOrder: 1
+
+    recent_invoice_line_item_1:
+        invoice: '@recent_invoice'
+        productSku: '8DR045'
+        productName: 'Lockable Tool Cabinet 7 Drawer'
+        summary: 'Lockable Tool Cabinet 7 Drawer'
+        quantity: 1
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 1249.00
+        subtotal: 1249.00
+        discountAmount: 0.00
+        taxAmount: 124.90
+        total: 1373.90
+        sortOrder: 0
+
+    recent_invoice_line_item_2:
+        invoice: '@recent_invoice'
+        productSku: '8DR050'
+        productName: 'Socket Set 94 Piece Metric/Imperial'
+        summary: 'Socket Set 94 Piece Metric/Imperial'
+        quantity: 3
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 168.90
+        subtotal: 506.70
+        discountAmount: 0.00
+        taxAmount: 50.67
+        total: 557.37
+        sortOrder: 1
+
+    draft_invoice_line_item_1:
+        invoice: '@draft_invoice'
+        productSku: '6WS310'
+        productName: 'Warehouse Step Ladder 8 Tread'
+        summary: 'Warehouse Step Ladder 8 Tread'
+        quantity: 2
+        productUnitCode: 'each'
+        currency: 'AUD'
+        value: 429.00
+        subtotal: 858.00
+        discountAmount: 0.00
+        taxAmount: 85.80
+        total: 943.80
+        sortOrder: 0

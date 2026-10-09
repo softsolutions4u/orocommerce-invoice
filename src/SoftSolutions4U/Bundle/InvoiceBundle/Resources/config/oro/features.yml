@@ -1,0 +1,15 @@
+features:
+    softsolutions4u_invoice.invoices_enabled:
+        label: softsolutions4u.invoice.system_configuration.fields.invoices_enabled.label
+        description: softsolutions4u.invoice.system_configuration.fields.invoices_enabled.description
+        toggle: softsolutions4u_invoice.invoices_enabled
+        routes:
+            - softsolutions4u_invoice_frontend_index
+            - softsolutions4u_invoice_frontend_view
+            - softsolutions4u_invoice_frontend_download_pdf
+            - softsolutions4u_invoice_frontend_payment
+            - softsolutions4u_invoice_frontend_payment_save_state
+            - softsolutions4u_invoice_frontend_payment_success
+            - softsolutions4u_invoice_frontend_payment_pending
+            - softsolutions4u_invoice_frontend_payment_create_for_invoice
+            - softsolutions4u_invoice_frontend_payment_error

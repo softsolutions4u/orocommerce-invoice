@@ -1,0 +1,11 @@
+aliases:
+    'softsolutions4uinvoice/js/app/views/payments-form-view': softsolutions4uinvoice/js/app/views/payments-form-view
+    'softsolutions4uinvoice/js/app/components/payments-component': softsolutions4uinvoice/js/app/components/payments-component
+    'softsolutions4uinvoice/js/app/components/payment-summary-component': softsolutions4uinvoice/js/app/components/payment-summary-component
+    'softsolutions4uinvoice/js/app/auto-hide-flash-messages': softsolutions4uinvoice/js/app/auto-hide-flash-messages
+
+dynamic-imports:
+    commons:
+        - softsolutions4uinvoice/js/app/components/payments-component
+        - softsolutions4uinvoice/js/app/components/payment-summary-component
+        - softsolutions4uinvoice/js/app/auto-hide-flash-messages

@@ -1,0 +1,253 @@
+{% extends '@OroUI/actions/view.html.twig' %}
+{% import '@OroUI/macros.html.twig' as UI %}
+{% import '@OroDataGrid/macros.html.twig' as dataGrid %}
+
+{% oro_title_set({params: {"%invoiceNo%": entity.invoiceNo} }) %}
+
+{% set statusLabel = (constant('SoftSolutions4U\\Bundle\\InvoiceBundle\\Entity\\Invoice::STATUSES')[entity.status] ?? entity.status)|trans %}
+{% set statusBadgeClass = {
+    'draft': 'disabled',
+    'posted': 'info',
+    'open': 'info',
+    'overdue': 'danger',
+    'paid': 'success',
+    'partially_paid': 'warning',
+    'cancelled': 'disabled'
+}[entity.status] ?? 'disabled' %}
+{% set canDelete = entity.amountPaid == 0 and entity.status == constant('SoftSolutions4U\\Bundle\\InvoiceBundle\\Entity\\Invoice::STATUS_DRAFT') %}
+{% set isPaidInFull = entity.isBalancePaid() %}
+
+{% block navButtons %}
+    {% if is_granted('softsolutions4u_invoice_update') and not entity.isPosted() and not entity.isCancelled() %}
+        {{ UI.editButton({
+            'path': path('softsolutions4u_invoice_update', {id: entity.id}),
+            'entity_label': 'softsolutions4u.invoice.entity_label'|trans
+        }) }}
+    {% endif %}
+    {% if is_granted('softsolutions4u_invoice_delete') and canDelete %}
+        {{ UI.deleteButton({
+            'dataUrl': path('softsolutions4u_invoice_delete', {id: entity.id}),
+            'dataRedirect': path('softsolutions4u_invoice_index'),
+            'aCss': 'no-hash remove-button',
+            'id': 'invoice-delete',
+            'dataId': entity.id,
+            'entity_label': 'softsolutions4u.invoice.entity_label'|trans
+        }) }}
+    {% endif %}
+    {% if not entity.isPosted() and not entity.isCancelled() and is_granted('softsolutions4u_invoice_post') %}
+        <div class="pull-left btn-group icons-holder">
+            {{ UI.clientLink({
+                'dataUrl': path('softsolutions4u_invoice_post', {id: entity.id}),
+                'aCss': 'btn icons-holder-text no-hash',
+                'label': 'softsolutions4u.invoice.actions.send_to_customer.label'|trans,
+                'iCss': 'fa-paper-plane',
+                'dataRedirect': path('softsolutions4u_invoice_view', {id: entity.id}),
+                'successMessage': 'softsolutions4u.invoice.messages.post_success'|trans,
+                'dataAttributes': {
+                    'page-component-module': 'softsolutions4uinvoice/js/app/components/confirm-ajax-button',
+                    'method': 'POST',
+                    'error-message': 'softsolutions4u.invoice.messages.post_error'|trans,
+                    'title': 'softsolutions4u.invoice.actions.send_to_customer.label'|trans,
+                    'message': 'softsolutions4u.invoice.actions.send_to_customer.confirmation'|trans,
+                    'ok-text': 'softsolutions4u.invoice.actions.proceed.label'|trans,
+                    'cancel-text': 'softsolutions4u.invoice.actions.cancel.label'|trans
+                }
+            }) }}
+        </div>
+    {% endif %}
+    {% if not entity.isPosted() and is_granted('softsolutions4u_invoice_download_pdf') %}
+        {% set previewOptions = {
+            previewUrl: path('softsolutions4u_invoice_preview_pdf', {id: entity.id}),
+            downloadUrl: path('softsolutions4u_invoice_download_pdf', {id: entity.id}),
+            title: 'softsolutions4u.invoice.actions.preview_pdf.title'|trans,
+            downloadText: 'softsolutions4u.invoice.actions.download_pdf.label'|trans,
+            closeText: 'softsolutions4u.invoice.actions.preview_pdf.close'|trans
+        } %}
+        <div class="pull-left btn-group icons-holder">
+            {{ UI.clientLink({
+                'aCss': 'btn icons-holder-text no-hash',
+                'label': 'softsolutions4u.invoice.actions.preview_pdf.label'|trans,
+                'iCss': 'fa-file-pdf-o',
+                'dataAttributes': {
+                    'page-component-module': 'softsolutions4uinvoice/js/app/components/invoice-pdf-preview',
+                    'page-component-options': previewOptions|json_encode
+                }
+            }) }}
+        </div>
+    {% endif %}
+    {% if entity.isPosted() and is_granted('softsolutions4u_invoice_download_pdf') %}
+        {{ UI.button({
+            'path': path('softsolutions4u_invoice_download_pdf', {id: entity.id}),
+            'aCss': 'no-hash',
+            'iCss': 'fa-download',
+            'label': 'softsolutions4u.invoice.actions.download_pdf.label'|trans,
+            'title': 'softsolutions4u.invoice.actions.download_pdf.label'|trans
+        }) }}
+    {% endif %}
+    {% if entity.isPosted() and not entity.isCancelled() and not isPaidInFull and is_granted('softsolutions4u_invoice_send_reminder') %}
+        <div class="pull-left btn-group icons-holder">
+            {{ UI.clientLink({
+                'dataUrl': path('softsolutions4u_invoice_send_reminder', {id: entity.id}),
+                'aCss': 'btn icons-holder-text no-hash',
+                'label': 'softsolutions4u.invoice.actions.send_reminder.label'|trans,
+                'iCss': 'fa-bell-o',
+                'dataRedirect': path('softsolutions4u_invoice_view', {id: entity.id}),
+                'successMessage': 'softsolutions4u.invoice.messages.send_reminder_success'|trans,
+                'dataAttributes': {
+                    'page-component-module': 'softsolutions4uinvoice/js/app/components/confirm-ajax-button',
+                    'method': 'POST',
+                    'error-message': 'softsolutions4u.invoice.messages.send_reminder_error'|trans,
+                    'title': 'softsolutions4u.invoice.actions.send_reminder.title'|trans,
+                    'message': 'softsolutions4u.invoice.actions.send_reminder.confirmation'|trans,
+                    'ok-text': 'softsolutions4u.invoice.actions.proceed.label'|trans,
+                    'cancel-text': 'softsolutions4u.invoice.actions.cancel.label'|trans
+                }
+            }) }}
+        </div>
+    {% endif %}
+    {% if entity.isPosted() and isPaidInFull and is_granted('softsolutions4u_invoice_send_payment_confirmation') %}
+        <div class="pull-left btn-group icons-holder">
+            {{ UI.clientLink({
+                'dataUrl': path('softsolutions4u_invoice_send_payment_confirmation', {id: entity.id}),
+                'aCss': 'btn icons-holder-text no-hash',
+                'label': 'softsolutions4u.invoice.actions.send_payment_confirmation.label'|trans,
+                'iCss': 'fa-check-circle-o',
+                'dataRedirect': path('softsolutions4u_invoice_view', {id: entity.id}),
+                'successMessage': 'softsolutions4u.invoice.messages.send_payment_confirmation_success'|trans,
+                'dataAttributes': {
+                    'page-component-module': 'softsolutions4uinvoice/js/app/components/confirm-ajax-button',
+                    'method': 'POST',
+                    'error-message': 'softsolutions4u.invoice.messages.send_payment_confirmation_error'|trans,
+                    'title': 'softsolutions4u.invoice.actions.send_payment_confirmation.title'|trans,
+                    'message': 'softsolutions4u.invoice.actions.send_payment_confirmation.confirmation'|trans,
+                    'ok-text': 'softsolutions4u.invoice.actions.proceed.label'|trans,
+                    'cancel-text': 'softsolutions4u.invoice.actions.cancel.label'|trans
+                }
+            }) }}
+        </div>
+    {% endif %}
+{% endblock navButtons %}
+
+{% block pageHeader %}
+    {% set breadcrumbs = {
+        entity: entity,
+        indexPath: path('softsolutions4u_invoice_index'),
+        indexLabel: 'softsolutions4u.invoice.entity_plural_label'|trans,
+        entityTitle: entity.invoiceNo
+    } %}
+    {{ parent() }}
+{% endblock pageHeader %}
+
+{% block breadcrumbs %}
+    {{ parent() }}
+    <span class="page-title__status">
+        {{ UI.badge(statusLabel, statusBadgeClass) }}
+    </span>
+{% endblock breadcrumbs %}
+
+{% block content_data %}
+    {% if entity.pendingPaymentConfirmation %}
+        <div class="alert alert-warning" role="alert">{{ 'softsolutions4u.invoice.messages.payment_awaiting_confirmation'|trans }}</div>
+    {% endif %}
+    {% set generalBlock %}
+        {{ UI.renderProperty('softsolutions4u.invoice.customer.label'|trans, entity.customer ? entity.customer.name : 'softsolutions4u.invoice.ui.not_available'|trans) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.details.customer_user.label'|trans, entity.customerUser ? entity.customerUser.email : 'softsolutions4u.invoice.ui.not_available'|trans) }}
+        {% set orderValue = 'softsolutions4u.invoice.ui.not_available'|trans %}
+        {% if entity.order %}
+            {% set orderLabel = entity.order.identifier|escape %}
+            {% if is_granted('VIEW', entity.order) %}
+                {% set orderValue = '<a href="' ~ path('oro_order_view', {id: entity.order.id}) ~ '">' ~ orderLabel ~ '</a>' %}
+            {% else %}
+                {% set orderValue = orderLabel %}
+            {% endif %}
+        {% endif %}
+        {{ UI.renderHtmlProperty('softsolutions4u.invoice.details.order.label'|trans, orderValue) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.invoice_no.label'|trans, entity.invoiceNo) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.po_number.label'|trans, entity.poNumber|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.status.label'|trans, statusLabel) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.details.internal_status.label'|trans, entity.internalStatus|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.issue_date.label'|trans, entity.issueDate ? entity.issueDate|oro_format_date : '') }}
+        {{ UI.renderProperty('softsolutions4u.invoice.due_date.label'|trans, entity.dueDate ? entity.dueDate|oro_format_date : '') }}
+        {{ UI.renderProperty('softsolutions4u.invoice.details.payment_method.label'|trans, entity.paymentMethod ? get_payment_method_label(entity.paymentMethod) : 'softsolutions4u.invoice.ui.not_available'|trans) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.payment_status.label'|trans, entity.paymentStatus ? get_payment_status_label(entity.paymentStatus) : 'softsolutions4u.invoice.ui.not_available'|trans) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.amount.label'|trans, entity.amount|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.subtotal.label'|trans, entity.subtotal|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.discount.label'|trans, entity.discountAmount|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.shipping.label'|trans, entity.shippingAmount|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.tax.label'|trans, entity.taxAmount|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.grand_total.label'|trans, entity.grandTotal|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.amount_paid.label'|trans, entity.amountPaid|oro_format_currency({currency: entity.currency})) }}
+        {{ UI.renderProperty('softsolutions4u.invoice.balance.label'|trans, entity.balance|oro_format_currency({currency: entity.currency})) }}
+        {% if is_granted('softsolutions4u_invoice_add_note') %}
+            {{ UI.renderProperty('softsolutions4u.invoice.actions.add_note.label'|trans, entity.memo|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+        {% endif %}
+    {% endset %}
+
+    {% set addressBlock %}
+        <div class="row">
+            <div class="col-md-6">
+                <h4>{{ 'softsolutions4u.invoice.billing_address.label'|trans }}</h4>
+                {{ UI.renderProperty('softsolutions4u.invoice.address.name.label'|trans, entity.billingAddressFullName|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.organization.label'|trans, entity.billingAddressOrganization|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.street1.label'|trans, entity.billingAddressStreet1|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.street2.label'|trans, entity.billingAddressStreet2|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.city.label'|trans, entity.billingAddressCity|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.state.label'|trans, entity.billingAddressState|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.postal_code.label'|trans, entity.billingAddressPostalCode|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.country.label'|trans, entity.billingAddressCountry|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.phone.label'|trans, entity.billingAddressPhone|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+            </div>
+            <div class="col-md-6">
+                <h4>{{ 'softsolutions4u.invoice.shipping_address.label'|trans }}</h4>
+                {{ UI.renderProperty('softsolutions4u.invoice.address.name.label'|trans, entity.shippingAddressFullName|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.organization.label'|trans, entity.shippingAddressOrganization|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.street1.label'|trans, entity.shippingAddressStreet1|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.street2.label'|trans, entity.shippingAddressStreet2|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.city.label'|trans, entity.shippingAddressCity|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.state.label'|trans, entity.shippingAddressState|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.postal_code.label'|trans, entity.shippingAddressPostalCode|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.country.label'|trans, entity.shippingAddressCountry|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+                {{ UI.renderProperty('softsolutions4u.invoice.address.phone.label'|trans, entity.shippingAddressPhone|default('softsolutions4u.invoice.ui.not_available'|trans)) }}
+            </div>
+        </div>
+    {% endset %}
+
+    {% set dataBlocks = [
+        {
+            title: 'softsolutions4u.invoice.sections.general.label'|trans,
+            class: 'active',
+            subblocks: [
+                { data: [generalBlock] },
+                { data: [addressBlock] }
+            ]
+        }
+    ] %}
+
+    {% set lineItemsBlock %}
+        {{ dataGrid.renderGrid('softsolutions4u-invoice-line-items-grid', {invoice_id: entity.id}) }}
+    {% endset %}
+    {% set dataBlocks = dataBlocks|merge([
+        {
+            title: 'softsolutions4u.invoice.sections.line_items.label'|trans,
+            subblocks: [{ data: [lineItemsBlock] }]
+        }
+    ]) %}
+
+    {% set paymentsBlock %}
+        {% if entity.order %}
+            {{ dataGrid.renderGrid('order-payment-transactions-grid', { order_id: entity.order.id }) }}
+        {% else %}
+            <div class="alert alert-info">{{ 'softsolutions4u.invoice.payments.empty.message'|trans }}</div>
+        {% endif %}
+    {% endset %}
+    {% set dataBlocks = dataBlocks|merge([
+        {
+            title: 'softsolutions4u.invoice.sections.payments.label'|trans,
+            subblocks: [{ data: [paymentsBlock] }]
+        }
+    ]) %}
+
+    {% set id = 'invoice-view' %}
+    {% set data = { dataBlocks: dataBlocks } %}
+    {{ parent() }}
+{% endblock content_data %}

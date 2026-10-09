@@ -1,0 +1,5 @@
+styles:
+    inputs:
+        - 'bundles/softsolutions4uinvoice/themes/default/scss/styles.scss'
+
+    output: 'css/styles.css'

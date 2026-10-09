@@ -1,0 +1,202 @@
+operations:
+    softsolutions4u_invoice_create_from_order:
+        label: softsolutions4u.invoice.order.action.create.label
+        enabled: true
+        applications: [default]
+        routes:
+            - oro_order_view
+        acl_resource: softsolutions4u_invoice_create
+        groups:
+            - view_navButtons.activity
+        button_options:
+            icon: fa-file-text-o
+            class: btn-primary
+        order: 35
+        # Hidden for cancelled orders; internalId holds the bare option code since the Oro 6 enum rework.
+        preconditions:
+            '@or':
+                - '@blank': $.data.internalStatus
+                - '@not_equal': [$.data.internalStatus.internalId, 'cancelled']
+        attributes:
+            invoice:
+                label: softsolutions4u.invoice.entity_label
+                type: entity
+                options:
+                    class: SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+            invoiceUrl:
+                label: softsolutions4u.invoice.entity_label
+                type: string
+            createError:
+                label: softsolutions4u.invoice.entity_label
+                type: string
+        actions:
+            # Same checks as the original createAction: cancelled order, existing draft, existing invoice.
+            - '@call_service_method':
+                service: SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceManager
+                method: getCreateError
+                method_parameters: [$.data]
+                attribute: $.createError
+
+            - '@tree':
+                conditions:
+                    '@equal': [$.createError, 'softsolutions4u.invoice.messages.order_cancelled']
+                actions:
+                    - '@flash_message':
+                        message: softsolutions4u.invoice.messages.order_cancelled
+                        type: 'error'
+
+            - '@tree':
+                conditions:
+                    '@equal': [$.createError, 'softsolutions4u.invoice.messages.already_draft']
+                actions:
+                    - '@flash_message':
+                        message: softsolutions4u.invoice.messages.already_draft
+                        type: 'error'
+
+            - '@tree':
+                conditions:
+                    '@equal': [$.createError, 'softsolutions4u.invoice.messages.already_created']
+                actions:
+                    - '@flash_message':
+                        message: softsolutions4u.invoice.messages.already_created
+                        type: 'error'
+
+            - '@tree':
+                conditions:
+                    '@empty': $.createError
+                actions:
+                    - '@call_service_method':
+                        service: SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceManager
+                        method: tryCreateDraftFromOrder
+                        method_parameters: [$.data]
+                        attribute: $.invoice
+
+            # Unexpected failure: logged by the manager, generic message shown.
+            - '@tree':
+                conditions:
+                    '@and':
+                        - '@empty': $.createError
+                        - '@empty': $.invoice
+                actions:
+                    - '@flash_message':
+                        message: softsolutions4u.invoice.messages.create_error
+                        type: 'error'
+
+            - '@tree':
+                conditions:
+                    '@not_empty': $.invoice
+                actions:
+                    - '@assign_url':
+                        attribute: $.invoiceUrl
+                        route: softsolutions4u_invoice_view
+                        route_parameters:
+                            id: $.invoice.id
+                    - '@flash_message':
+                        message: softsolutions4u.invoice.messages.create_success
+                        message_parameters:
+                            invoiceNo: $.invoice.invoiceNo
+                            url: $.invoiceUrl
+                        type: 'success'
+
+            - '@redirect':
+                parameters:
+                    route: oro_order_view
+                    route_parameters:
+                        id: $.data.id
+
+    # An operation rather than a grid action, because grid ajax actions issue GET requests.
+    softsolutions4u_invoice_cancel:
+        label: softsolutions4u.invoice.actions.cancel_invoice.label
+        enabled: true
+        applications: [default]
+        entities:
+            - SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+        routes:
+            - softsolutions4u_invoice_view
+        datagrids:
+            - softsolutions4u-invoices-grid
+            - softsolutions4u-order-invoices-grid
+        acl_resource: softsolutions4u_invoice_cancel
+        order: 40
+        button_options:
+            icon: fa-ban
+        frontend_options:
+            title: softsolutions4u.invoice.actions.cancel_invoice.title
+            confirmation:
+                title: softsolutions4u.invoice.actions.cancel_invoice.title
+                message: softsolutions4u.invoice.actions.cancel_invoice.confirmation
+                okText: softsolutions4u.invoice.actions.proceed.label
+                component: oroui/js/standart-confirmation
+        preconditions:
+            '@equal': [$.data.cancellable, true]
+        actions:
+            - '@call_service_method':
+                service: SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceCancellationManager
+                method: cancel
+                method_parameters: [$.data]
+            - '@flash_message':
+                message: softsolutions4u.invoice.messages.cancel_success
+                type: 'success'
+
+    softsolutions4u_invoice_resend_cancellation:
+        label: softsolutions4u.invoice.actions.resend_cancellation.label
+        enabled: true
+        applications: [default]
+        entities:
+            - SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+        routes:
+            - softsolutions4u_invoice_view
+        datagrids:
+            - softsolutions4u-invoices-grid
+            - softsolutions4u-order-invoices-grid
+        acl_resource: softsolutions4u_invoice_cancel
+        order: 45
+        button_options:
+            icon: fa-envelope-o
+        frontend_options:
+            title: softsolutions4u.invoice.actions.resend_cancellation.title
+            confirmation:
+                title: softsolutions4u.invoice.actions.resend_cancellation.title
+                message: softsolutions4u.invoice.actions.resend_cancellation.confirmation
+                okText: softsolutions4u.invoice.actions.proceed.label
+                component: oroui/js/standart-confirmation
+        preconditions:
+            '@equal': [$.data.cancelled, true]
+        actions:
+            - '@call_service_method':
+                service: SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoiceCancellationManager
+                method: resendCancellationNotification
+                method_parameters: [$.data]
+            - '@flash_message':
+                message: softsolutions4u.invoice.messages.resend_cancellation_success
+                type: 'success'
+
+    softsolutions4u_invoice_confirm_payment:
+        label: softsolutions4u.invoice.actions.confirm_payment.label
+        enabled: true
+        applications: [default]
+        entities:
+            - SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+        routes:
+            - softsolutions4u_invoice_view
+        acl_resource: softsolutions4u_invoice_confirm_payment
+        order: 30
+        button_options:
+            icon: fa-check
+        frontend_options:
+            title: softsolutions4u.invoice.actions.confirm_payment.title
+            confirmation:
+                title: softsolutions4u.invoice.actions.confirm_payment.title
+                message: softsolutions4u.invoice.actions.confirm_payment.confirmation
+                okText: softsolutions4u.invoice.actions.proceed.label
+                component: oroui/js/standart-confirmation
+        preconditions:
+            '@equal': [$.data.pendingPaymentConfirmation, true]
+        actions:
+            - '@call_service_method':
+                service: SoftSolutions4U\Bundle\InvoiceBundle\Manager\InvoicePaymentConfirmationManager
+                method: confirmPendingPayments
+                method_parameters: [$.data]
+            - '@flash_message':
+                message: softsolutions4u.invoice.messages.confirm_payment_success
+                type: 'success'

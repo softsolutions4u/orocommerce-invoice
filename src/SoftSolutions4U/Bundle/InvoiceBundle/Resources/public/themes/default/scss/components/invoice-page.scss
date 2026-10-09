@@ -1,0 +1,217 @@
+// This file is part of the SoftSolutions4U OroCommerce Invoice bundle.
+//
+// @category  SoftSolutions4U
+// @package   SoftSolutions4U\Bundle\InvoiceBundle
+// @author    Pradeep Elayaraja
+// @author    Ganesh
+// @copyright 2026 SoftSolutions4U
+// @license   https://www.gnu.org/licenses/gpl-3.0.html GPL-3.0-only
+// @link      https://www.softsolutions4u.com/
+
+// ============================================================
+// Invoice view page (storefront)
+//
+// This page now reuses Order View's own core classes for all
+// structural pieces - customer-info-grid, customer-info-grid__*,
+// grid/grid-columns-2, grid-col, summary-widget/summary-table,
+// and status-label - via block-id reuse in
+// softsolutions4u_invoice_frontend_view/layout.html.twig + layout.yml.
+// Those classes are already styled by core; nothing below
+// duplicates them.
+//
+// What's left here is genuinely Invoice-specific: the header
+// row's internal spacing (back-icon + title + status inline),
+// the address-line wrapping, and status colors for statuses
+// core's own map doesn't know about (overdue/partially_paid).
+// ============================================================
+
+.invoice-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.invoice-page-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.invoice-due-note {
+    margin-inline-start: 4px;
+    font-size: 12px;
+    color: #6b7580;
+}
+
+.invoice-address {
+    display: block;
+    line-height: 1.5;
+}
+
+.invoice-address-line {
+    display: block;
+}
+
+// ------------------------------------------------------------
+// Top row: address details (left, wide) + totals summary
+// (right, narrower sidebar, at the TOP of the page). See
+// invoice_top_columns / invoice_top_main / invoice_top_sidebar
+// in layout.html.twig + layout.yml.
+// ------------------------------------------------------------
+
+.invoice-top-columns {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 24px;
+
+    &__main {
+        flex: 1 1 0%;
+        min-width: 0; // allow the details grid to shrink instead of overflowing the row
+    }
+
+    &__sidebar {
+        flex: 0 0 320px;
+        width: 320px;
+    }
+
+    // Stack to a single column on smaller viewports - summary
+    // renders after (below) the details grid, in source order.
+    @include breakpoint('tablet') {
+        flex-direction: column;
+
+        &__sidebar {
+            flex: 1 1 auto;
+            width: 100%;
+        }
+    }
+}
+
+// Summary/totals box - self-contained now that it lives in the
+// sidebar rather than reusing Order's full-width order_info_total
+// wrapper classes (see layout.yml). summary-widget/summary-table
+// (rendered inside this by invoice_totals_table_widget) still
+// come from core.
+.invoice-summary-box {
+    width: 100%;
+}
+
+// status-label--<suffix> modifiers used by renderStatus for
+// invoice-only statuses that core's generic status-label CSS
+// doesn't already ship a color for.
+.status-label--danger {
+    background: #fbe6e6;
+    color: #b3261e;
+}
+
+.status-label--warning {
+    background: #fdf1dc;
+    color: #a15c00;
+}
+
+// Breadcrumbs render inside invoice_view_page (the .page-content
+// column, a sibling of .page-sidebar - see the real page structure in
+// CHANGES-storefront-view.md), so on their own they're confined to that
+// column's width, sitting beside the sidebar rather than above it. This
+// is a CSS "full viewport width breakout" (the 50vw trick) to visually
+// span the true full page width regardless of sidebar width, which we
+// don't know exactly without vendor/theme source - more robust than
+// hardcoding a pixel offset that would only be a guess.
+//
+// NOTE: this is a visual approximation, not a real DOM relocation - it
+// can't be verified without seeing it actually render, so treat it as a
+// starting point that may need padding/margin tuning once visible live,
+// not a guaranteed pixel-perfect match to page-main__header's position.
+.invoice-breadcrumbs {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: -8px;
+    margin-bottom: 16px;
+    padding: 8px max(16px, calc((100vw - 1400px) / 2)) 8px 16px;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.invoice-breadcrumbs ul,
+.invoice-breadcrumbs ol {
+    margin-block: 0;
+    padding-inline-start: 40px;
+}
+
+// Line items search - was a bare unstyled <input>+<button> with only
+// an inline margin. Styled as a proper inline toolbar row: label,
+// input, and buttons aligned on one line with consistent spacing,
+// matching the visual weight of a real Oro filter bar (though it's
+// still a plain GET-submitted form, not the JS-driven per-column
+// filter dropdowns Order's real datagrid has - that requires the real
+// datagrid to actually render, which needs a prod.log diagnosis - see
+// CHANGES-storefront-view.md).
+.invoice-line-items-filter {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f7f8fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+
+    .filter-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 260px;
+    }
+
+    .filter-item-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #6b7580;
+    }
+
+    .input {
+        height: 38px;
+        padding: 0 12px;
+        border: 1px solid #ccd1d9;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    .btn {
+        height: 38px;
+    }
+}
+
+/*
+ * "Back to Invoice List" on the Pay Invoice page: this block is added via
+ * a plain `@add` sibling of `page_title_container` in
+ * softsolutions4u_invoice_frontend_payment/layout.yml (that page has no custom
+ * header row of its own the way the Invoice view page does - see
+ * .invoice-header-left above), so by default it renders as its own
+ * full-width block directly below the "Pay Invoice" title, left-aligned.
+ * Pulling it up alongside the title row and right-aligning it puts it in
+ * the same top-right corner other page-level controls/alerts use,
+ * instead of sitting as an orphaned line underneath the heading.
+ */
+.invoice-payment-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -44px;
+
+    @media (max-width: 767px) {
+        // Not enough horizontal room next to the title on mobile -
+        // drop the pull-up and let it sit on its own line normally.
+        margin-top: 0;
+        justify-content: flex-start;
+    }
+}

@@ -1,0 +1,33 @@
+{% set firstName = record.getValue('shippingAddressFirstName') %}
+{% set lastName = record.getValue('shippingAddressLastName') %}
+{% set organization = record.getValue('shippingAddressOrganization') %}
+{% set street1 = record.getValue('shippingAddressStreet1') %}
+{% set street2 = record.getValue('shippingAddressStreet2') %}
+{% set city = record.getValue('shippingAddressCity') %}
+{% set state = record.getValue('shippingAddressState') %}
+{% set postalCode = record.getValue('shippingAddressPostalCode') %}
+{% set country = record.getValue('shippingAddressCountry') %}
+
+{% if firstName or lastName %}
+    {{ firstName }} {{ lastName }}<br>
+{% endif %}
+
+{% if organization %}
+    {{ organization }}<br>
+{% endif %}
+
+{% if street1 %}
+    {{ street1 }}<br>
+{% endif %}
+
+{% if street2 %}
+    {{ street2 }}<br>
+{% endif %}
+
+{% if city or state or postalCode %}
+    {{ city }}{% if city and state %}, {% endif %}{{ state }}{% if postalCode %} {{ postalCode }}{% endif %}<br>
+{% endif %}
+
+{% if country %}
+    {{ country }}
+{% endif %}

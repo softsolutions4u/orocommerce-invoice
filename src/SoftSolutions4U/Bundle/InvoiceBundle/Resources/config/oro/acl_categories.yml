@@ -1,0 +1,4 @@
+acl_categories:
+    invoice:
+        label: softsolutions4u.invoice.privilege.category.invoice.label
+        priority: 45

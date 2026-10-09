@@ -1,0 +1,129 @@
+layout:
+    imports:
+        -
+            id: softsolutions4u_invoice_frontend_grid
+            root: invoice_outstanding_section
+            namespace: softsolutions4u_invoices_outstanding
+        -
+            id: softsolutions4u_invoice_frontend_grid
+            root: invoice_paid_section
+            namespace: softsolutions4u_invoices_paid
+        -
+            id: softsolutions4u_invoice_frontend_grid
+            root: invoice_cancelled_section
+            namespace: softsolutions4u_invoices_cancelled
+        -
+            id: oro_customer_page
+
+    actions:
+        - '@setOption':
+            id: page_title
+            optionName: defaultValue
+            optionValue: 'softsolutions4u.invoice.frontend.grid.page_title.label'
+
+        - '@setBlockTheme':
+            themes:
+                - '@SoftSolutions4UInvoice/layouts/default/softsolutions4u_invoice_frontend_index/layout.html.twig'
+
+        # Outstanding invoices first, settled ones below, as on Order History.
+        - '@addTree':
+            items:
+                invoice_outstanding_section:
+                    blockType: container
+
+                invoice_outstanding_title:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.frontend.grid.outstanding.label'
+
+                invoice_paid_section:
+                    blockType: container
+
+                invoice_paid_title:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.frontend.grid.paid.label'
+
+                invoice_cancelled_section:
+                    blockType: container
+
+                invoice_cancelled_title:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.frontend.grid.cancelled.label'
+
+            tree:
+                page_content:
+                    invoice_outstanding_section:
+                        invoice_outstanding_title: ~
+                    invoice_paid_section:
+                        invoice_paid_title: ~
+                    invoice_cancelled_section:
+                        invoice_cancelled_title: ~
+
+        # addTree appends after the imported grid, so lift each title above it.
+        - '@move':
+            id: invoice_outstanding_title
+            parentId: invoice_outstanding_section
+            prepend: true
+
+        - '@move':
+            id: invoice_paid_title
+            parentId: invoice_paid_section
+            prepend: true
+
+        - '@move':
+            id: invoice_cancelled_title
+            parentId: invoice_cancelled_section
+            prepend: true
+
+        - '@setOption':
+            id: softsolutions4u_invoices_outstanding_datagrid
+            optionName: grid_name
+            optionValue: frontend-softsolutions4u-invoices-outstanding-grid
+
+        - '@setOption':
+            id: softsolutions4u_invoices_paid_datagrid
+            optionName: grid_name
+            optionValue: frontend-softsolutions4u-invoices-paid-grid
+
+        - '@setOption':
+            id: softsolutions4u_invoices_cancelled_datagrid
+            optionName: grid_name
+            optionValue: frontend-softsolutions4u-invoices-cancelled-grid
+
+        # Hide a section when it has no invoices; show one message when none has any.
+        - '@setOption':
+            id: invoice_outstanding_section
+            optionName: visible
+            optionValue: '=data["softsolutions4u_invoice_frontend_sections"].hasOutstandingInvoices()'
+
+        - '@setOption':
+            id: invoice_paid_section
+            optionName: visible
+            optionValue: '=data["softsolutions4u_invoice_frontend_sections"].hasPaidInvoices()'
+
+        - '@setOption':
+            id: invoice_cancelled_section
+            optionName: visible
+            optionValue: '=data["softsolutions4u_invoice_frontend_sections"].hasCancelledInvoices()'
+
+        - '@addTree':
+            items:
+                invoice_empty_message:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.frontend.grid.empty.label'
+                        visible: '=!data["softsolutions4u_invoice_frontend_sections"].hasAnyInvoices()'
+            tree:
+                page_content:
+                    invoice_empty_message: ~
+
+        # Same technique as the invoice VIEW page: attaches to Oro's shared page_main_header block.
+        - '@addTree':
+            items:
+                invoice_index_breadcrumbs:
+                    blockType: container
+            tree:
+                page_main_header:
+                    invoice_index_breadcrumbs: ~

@@ -1,0 +1,352 @@
+layout:
+    imports:
+        -
+            id: oro_customer_page
+        -
+            # Confirmed against Oro core's own OrderBundle source.
+            id: datagrid
+            root: invoice_line_items_body
+            namespace: invoice_line_items
+
+    actions:
+        # Load this bundle's own twig for the invoice-specific blocks.
+        - '@setBlockTheme':
+            themes:
+                - '@SoftSolutions4UInvoice/layouts/default/softsolutions4u_invoice_frontend_view/layout.html.twig'
+                - '@OroOrder/layouts/default/oro_order_frontend_view/layout.html.twig'
+
+        - '@setOption':
+            id: title
+            optionName: params
+            optionValue:
+                '%identifier%': '=data["invoice"].getInvoiceNo()'
+
+        - '@addTree':
+            items:
+                # Page wrapper additional_block_prefixes: ['order_view_page'] pul.
+                invoice_view_page:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_view_page']
+
+                # ---------------- Header (invoice-specific) ----------------
+
+                invoice_page_header:
+                    blockType: container
+
+                invoice_header_left:
+                    blockType: container
+
+                invoice_back_link:
+                    blockType: link
+                    options:
+                        route_name: softsolutions4u_invoice_frontend_index
+                        text: 'softsolutions4u.invoice.frontend.invoice_link.text'
+                        vars:
+                            labelClass: 'sr-only'
+                        attr:
+                            'class': 'btn btn--neutral hide-on-print'
+
+                invoice_page_title:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getInvoiceNo()'
+
+                invoice_page_status:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getStatus()'
+                        vars:
+                            due_date: '=data["invoice"].getDueDate()'
+
+                invoice_page_actions:
+                    blockType: container
+
+                invoice_download_link:
+                    blockType: link
+                    options:
+                        visible: '=data["invoice"].getStatus() != "draft"'
+                        route_name: softsolutions4u_invoice_frontend_download_pdf
+                        route_parameters:
+                            id: '=data["invoice"].getId()'
+                        text: 'softsolutions4u.invoice.frontend.invoice.toolbar-actions.btn.download'
+
+                invoice_pay_link:
+                    blockType: link
+                    options:
+                        # Belt-and-suspenders with getBalance() > 0: once RecalculateInvoicePaidAmountsListener.
+                        visible: '=data["invoice"].getBalance() > 0 and data["invoice"].getPaymentStatus() != "full" and (data["invoice"].getStatus() in ["posted", "open", "overdue", "partially_paid"])'
+                        route_name: softsolutions4u_invoice_frontend_payment_create_for_invoice
+                        route_parameters:
+                            id: '=data["invoice"].getId()'
+                        text: 'softsolutions4u.invoice.frontend.payment.actions.create.label'
+
+                # Body: details grid Everything below reuses Order's own generic.
+
+                invoice_info_container:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info_container']
+
+                invoice_info:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info']
+
+                invoice_info_wrapper:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info_block_container']
+
+                invoice_details_column_left:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info_column']
+
+                invoice_details_column_right:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info_column']
+
+                invoice_no:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getInvoiceNo()'
+                        label: 'softsolutions4u.invoice.invoice_no.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_issue_date:
+                    blockType: date
+                    options:
+                        date: '=data["invoice"].getIssueDate()'
+                        dateType: 3
+                        label: 'softsolutions4u.invoice.issue_date.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_due_date:
+                    blockType: date
+                    options:
+                        date: '=data["invoice"].getDueDate()'
+                        dateType: 3
+                        label: 'softsolutions4u.invoice.due_date.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_customer_user:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getCustomerUser().getEmail()'
+                        label: 'softsolutions4u.invoice.details.customer_user.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_ship_to:
+                    blockType: text
+                    options:
+                        text: ''
+                        label: 'softsolutions4u.invoice.details.ship_to_address.label'
+                        vars:
+                            lines: '=data["invoice"].getShippingAddressLines()'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_currency:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.currency.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_order:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getOrder().getIdentifier()'
+                        label: 'softsolutions4u.invoice.details.order.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_payment_method:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getPaymentMethod()'
+                        label: 'softsolutions4u.invoice.details.payment_method.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_payment_status:
+                    blockType: text
+                    options:
+                        text: '=data["invoice"].getPaymentStatus()'
+                        label: 'softsolutions4u.invoice.details.payment_status.label'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                invoice_bill_to:
+                    blockType: text
+                    options:
+                        text: ''
+                        label: 'softsolutions4u.invoice.details.bill_to_address.label'
+                        vars:
+                            lines: '=data["invoice"].getBillingAddressLines()'
+                        additional_block_prefixes: ['order_info_column_element']
+
+                # Top row: address details.
+
+                invoice_top_columns:
+                    blockType: container
+
+                invoice_top_main:
+                    blockType: container
+
+                invoice_top_sidebar:
+                    blockType: container
+
+                # ---------------- Line items (full width, below the top row) ----------------
+
+                invoice_info_data:
+                    blockType: container
+                    options:
+                        additional_block_prefixes: ['order_info_data']
+
+                # Head/body split mirrors @OroOrder's own oro_line_items_grid import.
+                invoice_line_items_head:
+                    blockType: container
+
+                invoice_line_items_title:
+                    blockType: text
+                    options:
+                        text: 'softsolutions4u.invoice.line_items.label'
+
+                # REMOVED additional_block_prefixes: ['order_info_block_container'].
+                invoice_line_items_body:
+                    blockType: container
+
+                # invoice_line_items_grid is no longer defined here.
+
+                # ---------------- Totals (summary-widget/table markup) ----------------
+
+                # No longer reuses Order's `order_info_total` wrapper.
+                invoice_info_total:
+                    blockType: container
+
+                # Plain container (was blockType: summary_collapse.
+                invoice_total_main:
+                    blockType: container
+
+                invoice_totals_table:
+                    blockType: container
+
+                invoice_subtotal:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getSubtotal()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.subtotal.label'
+                        additional_block_prefixes: ['invoice_summary_row']
+
+                invoice_discount:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getDiscountAmount()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.discount.label'
+                        additional_block_prefixes: ['invoice_summary_row']
+
+                invoice_shipping_amount:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getShippingAmount()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.shipping_amount.label'
+                        additional_block_prefixes: ['invoice_summary_row']
+
+                invoice_total_tax:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getTaxAmount()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.tax_total.label'
+                        additional_block_prefixes: ['invoice_summary_row']
+
+                invoice_grand_total:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getGrandTotal()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.grand_total.label'
+                        additional_block_prefixes: ['invoice_summary_total_row']
+
+                invoice_amount_paid:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getAmountPaid()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.amount_paid.label'
+                        additional_block_prefixes: ['invoice_summary_row']
+
+                invoice_balance:
+                    blockType: currency
+                    options:
+                        value: '=data["invoice"].getBalance()'
+                        currency: '=data["invoice"].getCurrency()'
+                        label: 'softsolutions4u.invoice.balance.label'
+                        additional_block_prefixes: ['invoice_summary_total_row']
+
+            tree:
+                page_content:
+                    invoice_view_page:
+                        invoice_page_header:
+                            invoice_header_left:
+                                invoice_back_link: ~
+                                invoice_page_title: ~
+                                invoice_page_status: ~
+                            invoice_page_actions:
+                                invoice_download_link: ~
+                                invoice_pay_link: ~
+                        invoice_top_columns:
+                            invoice_top_main:
+                                invoice_info_container:
+                                    invoice_info:
+                                        invoice_info_wrapper:
+                                            invoice_details_column_left:
+                                                invoice_no: ~
+                                                invoice_issue_date: ~
+                                                invoice_due_date: ~
+                                                invoice_customer_user: ~
+                                                invoice_ship_to: ~
+                                            invoice_details_column_right:
+                                                invoice_currency: ~
+                                                invoice_order: ~
+                                                invoice_payment_method: ~
+                                                invoice_payment_status: ~
+                                                invoice_bill_to: ~
+                            invoice_top_sidebar:
+                                invoice_info_total:
+                                    invoice_total_main:
+                                        invoice_totals_table:
+                                            invoice_subtotal: ~
+                                            invoice_discount: ~
+                                            invoice_shipping_amount: ~
+                                            invoice_total_tax: ~
+                                            invoice_grand_total: ~
+                                            invoice_amount_paid: ~
+                                            invoice_balance: ~
+                        invoice_info_data:
+                            invoice_line_items_head:
+                                invoice_line_items_title: ~
+                            invoice_line_items_body: ~
+
+        # Points the imported "datagrid".
+        - '@setOption':
+            id: invoice_line_items_datagrid
+            optionName: grid_name
+            optionValue: frontend-softsolutions4u-invoice-line-items-grid
+
+        - '@setOption':
+            id: invoice_line_items_datagrid
+            optionName: grid_parameters
+            optionValue:
+                invoice_id: '=data["invoice"].getId()'
+
+        # Separate @addTree action, deliberate.
+        - '@addTree':
+            items:
+                invoice_breadcrumbs:
+                    blockType: container
+            tree:
+                page_main_header:
+                    invoice_breadcrumbs: ~

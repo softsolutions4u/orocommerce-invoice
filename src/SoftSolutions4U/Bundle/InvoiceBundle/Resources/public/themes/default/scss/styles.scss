@@ -1,0 +1,17 @@
+// This file is part of the SoftSolutions4U OroCommerce Invoice bundle.
+//
+// @category  SoftSolutions4U
+// @package   SoftSolutions4U\Bundle\InvoiceBundle
+// @author    Pradeep Elayaraja
+// @author    Ganesh
+// @copyright 2026 SoftSolutions4U
+// @license   https://www.gnu.org/licenses/gpl-3.0.html GPL-3.0-only
+// @link      https://www.softsolutions4u.com/
+
+@import "bundles/orocheckout/default/scss/variables/checkout-form-config";
+
+@import "components/datagrid";
+@import "components/invoice-form";
+@import "components/invoice-page";
+@import "components/order-invoice-payment-summary";
+@import "components/order-invoice-widget";

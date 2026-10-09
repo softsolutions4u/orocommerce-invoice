@@ -1,0 +1,379 @@
+datagrids:
+    frontend-softsolutions4u-invoices-grid:
+        extended_entity_name: 'SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice'
+
+        options:
+            entityHint: softsolutions4u.invoice.entity_plural_label
+            frontend: true
+
+            # Grid toolbar (pagination, "Manage Grid" column visibility, Reset).
+            toolbarOptions:
+                pageSize:
+                    default_per_page: 10
+                    items: [10, 25, 50, 100]
+                    hide: false
+
+                pagination:
+                    hide: false
+
+                hide: false
+
+                addDatagridSettingsManager: true
+                addResetAction: true
+
+                # Grid-specific key, so other storefront grids keep Oro's own counter label.
+                itemsCounter:
+                    transTemplate: softsolutions4u.invoice.frontend.grid.pagination.totalRecordsShortPlural
+
+        source:
+            type: orm
+
+            query:
+                select:
+                    - invoice.id
+                    - invoice.invoiceNo
+                    - invoice.issueDate
+                    - invoice.dueDate
+                    - invoice.amount
+                    - invoice.amountPaid
+                    - invoice.taxAmount as totalTax
+                    - invoice.currency
+                    - invoice.status as invoiceStatusId
+                    - invoice.paymentStatus as paymentStatus
+
+                    # IMPORTANT: Do not select customerUser as an entity.
+                    - customerUser.email as assignedToEmail
+                    - customerUser.firstName as assignedToFirstName
+                    - customerUser.lastName as assignedToLastName
+
+                    - invoice.billingAddressFirstName
+                    - invoice.billingAddressLastName
+                    - invoice.billingAddressOrganization
+                    - invoice.billingAddressStreet1
+                    - invoice.billingAddressStreet2
+                    - invoice.billingAddressCity
+                    - invoice.billingAddressState
+                    - invoice.billingAddressPostalCode
+                    - invoice.billingAddressCountry
+
+                    - invoice.shippingAddressFirstName
+                    - invoice.shippingAddressLastName
+                    - invoice.shippingAddressOrganization
+                    - invoice.shippingAddressStreet1
+                    - invoice.shippingAddressStreet2
+                    - invoice.shippingAddressCity
+                    - invoice.shippingAddressState
+                    - invoice.shippingAddressPostalCode
+                    - invoice.shippingAddressCountry
+
+                    - (invoice.amount - invoice.amountPaid) as balance
+
+                from:
+                    - { table: SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice, alias: invoice }
+
+                join:
+                    left:
+                        - { join: invoice.customerUser, alias: customerUser }
+
+                where:
+                    and:
+                        - invoice.status != 'draft'
+
+            bind_parameters: []
+
+        columns:
+            id:
+                renderable: false
+                label: softsolutions4u.invoice.id.label
+
+            invoiceNo:
+                label: softsolutions4u.invoice.invoice_no.label
+
+            issueDate:
+                label: softsolutions4u.invoice.frontend.grid.invoice_date.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/date.html.twig'
+
+            amount:
+                label: softsolutions4u.invoice.frontend.grid.total_amount.label
+                frontend_type: currency
+
+            paymentStatus:
+                label: softsolutions4u.invoice.payment_status.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/paymentStatus.html.twig'
+
+            assignedTo:
+                label: softsolutions4u.invoice.frontend.grid.assigned_to.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/assignedTo.html.twig'
+
+            billTo:
+                label: softsolutions4u.invoice.frontend.grid.bill_to.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/billTo.html.twig'
+
+            shipTo:
+                label: softsolutions4u.invoice.frontend.grid.ship_to.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/shipTo.html.twig'
+
+            invoiceStatusId:
+                label: softsolutions4u.invoice.status.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/status.html.twig'
+                renderable: true
+
+            balance:
+                renderable: false
+
+        filters:
+            columns:
+                invoiceNo:
+                    type: string
+                    data_name: invoice.invoiceNo
+
+                issueDate:
+                    type: datetime
+                    data_name: invoice.issueDate
+
+                invoiceStatusId:
+                    enabled: true
+                    type: choice
+                    data_name: invoice.status
+                    options:
+                        field_options:
+                            choices:
+                                softsolutions4u.invoice.statuses.open: open
+                                softsolutions4u.invoice.statuses.posted: posted
+                                softsolutions4u.invoice.statuses.overdue: overdue
+                                softsolutions4u.invoice.statuses.partially_paid: partially_paid
+                                softsolutions4u.invoice.statuses.paid: paid
+                                softsolutions4u.invoice.statuses.cancelled: cancelled
+                            multiple: true
+
+                paymentStatus:
+                    enabled: true
+                    type: choice
+                    data_name: invoice.paymentStatus
+                    options:
+                        field_options:
+                            choices:
+                                softsolutions4u.invoice.payment_statuses.pending: pending
+                                softsolutions4u.invoice.payment_statuses.partially: partially
+                                softsolutions4u.invoice.payment_statuses.full: full
+                            multiple: true
+
+        sorters:
+            columns:
+                invoiceNo:
+                    data_name: invoice.invoiceNo
+
+                issueDate:
+                    data_name: invoice.issueDate
+
+                amount:
+                    data_name: invoice.amount
+
+                paymentStatus:
+                    data_name: invoice.paymentStatus
+
+            default:
+                issueDate: DESC
+
+        properties:
+            id: ~
+
+            view_link:
+                type: url
+                route: softsolutions4u_invoice_frontend_view
+                params:
+                    - id
+
+            pay_link:
+                type: url
+                route: softsolutions4u_invoice_frontend_payment_create_for_invoice
+                params:
+                    - id
+
+        actions:
+            view:
+                type: navigate
+                label: oro.grid.action.view
+                link: view_link
+                icon: eye
+                rowAction: true
+
+            pay:
+                type: navigate
+                label: softsolutions4u.invoice.frontend.payment.actions.create.label
+                link: pay_link
+                icon: credit-card
+
+        action_configuration: ['@softsolutions4u.invoice.datagrid.frontend_actions', getActionConfiguration]
+
+        inline_editing:
+            enable: false
+
+    # Line items of one invoice on the storefront invoice page.
+    frontend-softsolutions4u-invoice-line-items-grid:
+        extended_entity_name: 'SoftSolutions4U\Bundle\InvoiceBundle\Entity\InvoiceLineItem'
+        acl_resource: softsolutions4u_invoice_frontend_view
+        options:
+            entityHint: softsolutions4u.invoice.invoicelineitem.entity_plural_label
+            frontend: true
+        source:
+            type: orm
+            query:
+                select:
+                    - invoicelineitem.id
+                    - invoicelineitem.productSku as sku
+                    - invoicelineitem.productName as product
+                    # IDENTITY() pulls just the product's id.
+                    - IDENTITY(invoicelineitem.product) as productId
+                    - invoicelineitem.summary
+                    - invoicelineitem.quantity as qty
+                    - invoicelineitem.productUnitCode as productUnit
+                    - invoicelineitem.value as unitPrice
+                    - invoicelineitem.taxAmount as tax
+                    - invoicelineitem.subtotal
+                    - invoicelineitem.total
+                    - invoicelineitem.currency
+                from:
+                    - { table: SoftSolutions4U\Bundle\InvoiceBundle\Entity\InvoiceLineItem, alias: invoicelineitem }
+                where:
+                    and:
+                        - invoicelineitem.invoice = :invoice_id
+                orderBy:
+                    - column: invoicelineitem.sortOrder
+                      dir: ASC
+            bind_parameters:
+                - invoice_id
+        properties:
+            id: ~
+            productUrl:
+                type: url
+                route: oro_product_frontend_product_view
+                params:
+                    id: productId
+        actions:
+            view:
+                type: navigate
+                acl_resource: softsolutions4u_invoice_frontend_view
+                label: softsolutions4u.invoice.frontend.line_item.actions.view.label
+                icon: eye
+                link: productUrl
+                rowAction: true
+        columns:
+            id:
+                renderable: false
+                label: softsolutions4u.invoice.id.label
+            sku:
+                label: softsolutions4u.invoice.frontend.line_item.sku.label
+                frontend_type: string
+                renderable: false
+            product:
+                label: softsolutions4u.invoice.frontend.line_item.product.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/productLink.html.twig'
+                renderable: true
+            productUnit:
+                label: softsolutions4u.invoice.frontend.line_item.unit.label
+                frontend_type: string
+                renderable: false
+            qty:
+                label: softsolutions4u.invoice.frontend.line_item.quantity.label
+                type: twig
+                frontend_type: html
+                template: '@SoftSolutions4UInvoice/Datagrid/Property/quantity.html.twig'
+                renderable: true
+            unitPrice:
+                label: softsolutions4u.invoice.frontend.line_item.unit_price.label
+                frontend_type: currency
+                renderable: true
+            tax:
+                label: softsolutions4u.invoice.frontend.line_item.tax.label
+                frontend_type: currency
+                renderable: true
+            subtotal:
+                label: softsolutions4u.invoice.frontend.line_item.subtotal.label
+                frontend_type: currency
+                renderable: true
+            total:
+                label: softsolutions4u.invoice.frontend.line_item.total.label
+                frontend_type: currency
+                renderable: true
+
+        sorters:
+            columns:
+                sku: { data_name: sku }
+                product: { data_name: product }
+                qty: { data_name: qty }
+                total: { data_name: total }
+            default:
+                id: ASC
+        inline_editing:
+            enable: false
+
+    # Outstanding, paid and cancelled sections of the storefront invoice list.
+    frontend-softsolutions4u-invoices-outstanding-grid:
+        extends: frontend-softsolutions4u-invoices-grid
+        filters:
+            columns:
+                paymentStatus:
+                    enabled: false
+        source:
+            query:
+                where:
+                    and:
+                        - invoice.paymentStatus != 'full'
+                        - invoice.status != 'cancelled'
+        options:
+            entityHint: softsolutions4u.invoice.frontend.grid.outstanding.label
+            toolbarOptions:
+                itemsCounter:
+                    transTemplate: softsolutions4u.invoice.frontend.grid.pagination.totalRecordsShortPlural
+
+    frontend-softsolutions4u-invoices-paid-grid:
+        extends: frontend-softsolutions4u-invoices-grid
+        filters:
+            columns:
+                paymentStatus:
+                    enabled: false
+        source:
+            query:
+                where:
+                    and:
+                        - invoice.paymentStatus = 'full'
+                        - invoice.status != 'cancelled'
+        options:
+            entityHint: softsolutions4u.invoice.frontend.grid.paid.label
+            toolbarOptions:
+                itemsCounter:
+                    transTemplate: softsolutions4u.invoice.frontend.grid.pagination.totalRecordsShortPlural
+
+    frontend-softsolutions4u-invoices-cancelled-grid:
+        extends: frontend-softsolutions4u-invoices-grid
+        filters:
+            columns:
+                paymentStatus:
+                    enabled: false
+                invoiceStatusId:
+                    enabled: false
+        source:
+            query:
+                where:
+                    and:
+                        - invoice.status = 'cancelled'
+        options:
+            entityHint: softsolutions4u.invoice.frontend.grid.cancelled.label
+            toolbarOptions:
+                itemsCounter:
+                    transTemplate: softsolutions4u.invoice.frontend.grid.pagination.totalRecordsShortPlural

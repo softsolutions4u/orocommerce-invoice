@@ -1,0 +1,6 @@
+{% set status = record.getValue('invoiceStatusId')|default('unknown') %}
+{% set statuses = constant('SoftSolutions4U\\Bundle\\InvoiceBundle\\Entity\\Invoice::STATUSES') %}
+
+<span class="invoice-status invoice-status-{{ status|e('html_attr') }}">
+    {{ (statuses[status] ?? status)|trans }}
+</span>

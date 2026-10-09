@@ -1,0 +1,142 @@
+{% block softsolutions4u_invoice_line_item_widget %}
+    {% set lineItem = form.vars.value %}
+    {% set product = lineItem ? lineItem.product : null %}
+    {% set productUnit = lineItem ? lineItem.productUnit : null %}
+
+    <td class="line-item-product">
+        {% if product %}
+            <strong>{{ product.defaultName }}</strong><br>
+            <small>{{ product.sku }}</small>
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <td class="line-item-unit">
+        {{ productUnit ? productUnit.code : '—' }}
+    </td>
+
+    <td class="line-item-qty">
+        {{ lineItem.quantity ?? '—' }}
+    </td>
+
+    <td class="line-item-price">
+        {% if lineItem and lineItem.value is not null %}
+            {{ lineItem.value|oro_format_currency({
+                currency: lineItem.currency|default('USD')
+            }) }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <td class="line-item-discount">
+        {{ lineItem.discountAmount ?? '—' }}
+    </td>
+
+    <td class="line-item-tax">
+        {{ lineItem.taxAmount ?? '—' }}
+    </td>
+
+    <td class="line-item-subtotal">
+        {% if lineItem and lineItem.subtotal is not null %}
+            {{ lineItem.subtotal|oro_format_currency({
+                currency: lineItem.currency|default('USD')
+            }) }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <td class="line-item-total">
+        {% if lineItem and lineItem.total is not null %}
+            {{ lineItem.total|oro_format_currency({
+                currency: lineItem.currency|default('USD')
+            }) }}
+        {% else %}
+            —
+        {% endif %}
+    </td>
+{% endblock %}
+
+
+{% macro softsolutions4u_invoice_line_items_collection_item_prototype(widget) %}
+    {% if 'collection' in widget.vars.block_prefixes %}
+        {% set form = widget.vars.prototype %}
+        {% set name = widget.vars.full_name ~ '[' ~ widget.vars.prototype.vars.name ~ ']' %}
+        {% set allow_delete = widget.vars.allow_delete %}
+    {% else %}
+        {% set form = widget %}
+        {% set name = widget.vars.full_name %}
+        {% set allow_delete = widget.parent.vars.allow_delete %}
+    {% endif %}
+
+    <tr
+        data-content="{{ name }}"
+        class="line-item-row"
+    >
+        {{ form_widget(form) }}
+
+        {% if allow_delete %}
+            <td class="line-item-remove">
+                <button
+                    type="button"
+                    class="removeLineItem btn btn-icon btn-square-lighter"
+                    aria-label="{{ 'softsolutions4u.invoice.invoicelineitem.remove.label'|trans }}"
+                >
+                    <span class="fa-trash-o" aria-hidden="true"></span>
+                </button>
+            </td>
+        {% endif %}
+    </tr>
+{% endmacro %}
+
+
+{% block softsolutions4u_invoice_line_items_widget %}
+    {% import _self as fields %}
+
+    {% apply spaceless %}
+
+        {% set allow_delete = form.vars.allow_delete|default(false) %}
+
+        <div class="row-oro">
+
+            <div {{ block('widget_container_attributes') }}>
+
+                <table class="grid grid-main-container table-hover table table-bordered table-condensed invoice-line-items-table">
+
+                    <thead>
+                        <tr>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.product.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.unit.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.quantity.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.unit_price.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.discount.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.tax.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.subtotal.label'|trans }}</th>
+                            <th>{{ 'softsolutions4u.invoice.frontend.line_item.total.label'|trans }}</th>
+
+                            {% if allow_delete %}
+                                <th></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for child in form.children %}
+                            <tr class="line-item-row">
+
+                                {{ fields.softsolutions4u_invoice_line_items_collection_item_prototype(child) }}
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    {% endapply %}
+{% endblock %}

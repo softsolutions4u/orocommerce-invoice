@@ -1,0 +1,32 @@
+services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Controller\InvoiceController:
+        calls:
+            - ['setContainer', ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Controller\Admin\AdminInvoiceController:
+        calls:
+            - ['setContainer', ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }
+
+    SoftSolutions4U\Bundle\InvoiceBundle\Controller\Frontend\FrontendInvoiceController:
+        autowire: false
+        arguments:
+            - '@oro_form.update_handler'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Provider\FrontendInvoiceProvider'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Factory\InvoicePaymentFactory'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Form\Handler\InvoicePaymentFormHandler'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Manager\PaymentManager'
+            - '@SoftSolutions4U\Bundle\InvoiceBundle\Pdf\InvoicePdfGenerator'
+            - '@translator'
+        calls:
+            - ['setContainer', ['@Psr\Container\ContainerInterface']]
+        tags:
+            - { name: container.service_subscriber }

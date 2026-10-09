@@ -1,0 +1,99 @@
+layout:
+    imports:
+        - 'oro_payment_method_options'
+        - 'oro_payment_method_order_submit'
+    actions:
+        - '@setBlockTheme':
+              themes: 'layout.html.twig'
+        - '@addTree':
+              items:
+                  __container:
+                      blockType: container
+                  __form_start:
+                      blockType: form_start
+                      options:
+                          form: '=data["commerce_payment_type"].getPaymentFormView(data["entity"])'
+                  __form_errors:
+                      blockType: form_errors
+                      options:
+                          form: '=data["commerce_payment_type"].getPaymentFormView(data["entity"])'
+                  __payment_subtree_update:
+                      blockType: layout_subtree_update
+                      options:
+                          reloadEvents: [ 'softsolutions4u:invoice:payment:changed' ]
+                  __payment_actions_subtree_update:
+                      blockType: layout_subtree_update
+                      options:
+                          reloadEvents: [ 'softsolutions4u:invoice:payment:changed' ]
+                  payment_methods_hidden:
+                      blockType: form_fields
+                      options:
+                          form: '=data["commerce_payment_type"].getPaymentFormView(data["entity"])'
+                  __form_fields:
+                      blockType: form_fields
+                      options:
+                          form: '=data["commerce_payment_type"].getPaymentFormView(data["entity"])'
+                  __payment_methods:
+                      blockType: payment_methods
+                      options:
+                          views: '=data["commerce_payment_method_views"].getViews(data["commerce_payment_context"].getContext(data["entity"]))'
+                          currentPaymentMethod: '=data["entity"].getPaymentMethod()'
+                          class_prefix: 'invoice'
+                          # 'grid' was Oro core's CSS class for its JS-rendered Backbone datagrid component.
+                  __payment_summary_totals:
+                      # Was blockType: price_totals.
+                      blockType: container
+                      options:
+                          vars:
+                              summary: '=data["softsolutions4u_invoice_payment_summary"].getData(data["entity"])'
+                  __form_actions:
+                      blockType: container
+                  __form_actions_submit:
+                      blockType: button
+                      options:
+                          action: submit
+                          text: softsolutions4u.invoice.frontend.payment.actions.process.label
+                          style: auto
+                          attr:
+                              'class': 'role-submit btn btn--info'
+                  payment_additional_data:
+                      blockType: payment_additional_data
+                      options:
+                          block_name: payment_additional_data
+                          options:
+                              views: '=data["commerce_payment_method_views"].getViews(data["commerce_payment_context"].getContext(data["entity"]))'
+                              block_prefix: "order_review"
+                  __form_end:
+                      blockType: form_end
+                      options:
+                          form: '=data["commerce_payment_type"].getPaymentFormView(data["entity"])'
+                  invoice_payment_body_container:
+                      blockType: container
+                      options:
+                          additional_block_prefixes: [ 'order_body_block_container' ]
+                  invoice_payment_body_column_left:
+                      blockType: container
+                      options:
+                          additional_block_prefixes: [ 'order_body_column' ]
+                  invoice_payment_body_column_right:
+                      blockType: container
+                      options:
+                          additional_block_prefixes: [ 'order_body_column' ]
+              tree:
+                  __root:
+                      __container:
+                          __form_start: ~
+                          __form_errors: ~
+                          payment_methods_hidden: ~
+                          invoice_payment_body_container:
+                              invoice_payment_body_column_left:
+                                  __payment_subtree_update:
+                                      __form_fields: ~
+                                      __payment_methods: ~
+                                  __payment_actions_subtree_update:
+                                      __form_actions:
+                                          __form_actions_submit: ~
+                              invoice_payment_body_column_right:
+                                  __payment_summary_totals: ~
+                          payment_additional_data: ~
+                          __form_end: ~

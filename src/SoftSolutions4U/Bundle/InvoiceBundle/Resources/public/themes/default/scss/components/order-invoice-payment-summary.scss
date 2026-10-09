@@ -1,0 +1,76 @@
+// This file is part of the SoftSolutions4U OroCommerce Invoice bundle.
+//
+// @category  SoftSolutions4U
+// @package   SoftSolutions4U\Bundle\InvoiceBundle
+// @author    Pradeep Elayaraja
+// @author    Ganesh
+// @copyright 2026 SoftSolutions4U
+// @license   https://www.gnu.org/licenses/gpl-3.0.html GPL-3.0-only
+// @link      https://www.softsolutions4u.com/
+
+.order-invoice-payment-summary {
+  margin-top: 24px;
+
+  @include breakpoint('tablet') {
+    .grid__row {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+  }
+
+  .order-invoice-payment-message {
+    margin-bottom: 1rem;
+  }
+}
+
+// Payment summary card shown beside the storefront Pay Invoice form.
+.invoice-payment-summary {
+    padding: 16px 20px;
+    border: 1px solid #d5dae1;
+    border-radius: 4px;
+    background: #fff;
+
+    &__title {
+        margin: 0 0 12px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    &__row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 8px 0;
+
+        + .invoice-payment-summary__row {
+            border-top: 1px solid #eef1f4;
+        }
+    }
+
+    &__label {
+        color: #4b5563;
+    }
+
+    &__value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+
+    &__row--total {
+        margin-top: 4px;
+        padding-top: 12px;
+        border-top: 2px solid #d5dae1;
+        font-size: 15px;
+        font-weight: 700;
+
+        .invoice-payment-summary__label,
+        .invoice-payment-summary__value {
+            color: inherit;
+            font-weight: 700;
+        }
+    }
+}

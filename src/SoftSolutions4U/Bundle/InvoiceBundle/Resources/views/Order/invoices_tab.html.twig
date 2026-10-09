@@ -1,0 +1,7 @@
+{% import '@OroDataGrid/macros.html.twig' as dataGrid %}
+
+<div class="widget-content" id="order-invoices">
+    <div class="row-fluid form-horizontal">
+        {{ dataGrid.renderGrid('softsolutions4u-order-invoices-grid', { order_id: entity.id }) }}
+    </div>
+</div>

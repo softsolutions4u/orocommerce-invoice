@@ -1,0 +1,13 @@
+{% if record.getValue('assignedToFirstName') or record.getValue('assignedToLastName') %}
+    {{ record.getValue('assignedToFirstName') }}
+    {{ record.getValue('assignedToLastName') }}
+
+    {% if record.getValue('assignedToEmail') %}
+        <br>
+        <small>{{ record.getValue('assignedToEmail') }}</small>
+    {% endif %}
+{% elseif record.getValue('assignedToEmail') %}
+    {{ record.getValue('assignedToEmail') }}
+{% else %}
+    -
+{% endif %}

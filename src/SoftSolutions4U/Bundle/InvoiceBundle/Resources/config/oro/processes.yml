@@ -1,0 +1,31 @@
+processes:
+    definitions:
+        softsolutions4u_set_invoices_as_overdue:
+            label: softsolutions4u.invoice.process.set_overdue.label
+            enabled: true
+            entity: SoftSolutions4U\Bundle\InvoiceBundle\Entity\Invoice
+            order: 20
+            exclude_definitions: [softsolutions4u_set_invoices_as_overdue]
+            actions_configuration:
+                - '@call_service_method':
+                      service: softsolutions4u.invoice.provider.invoice_provider
+                      method: markOverdueInvoices
+
+    triggers:
+        softsolutions4u_set_invoices_as_overdue:
+            -
+                event: create
+                queued: true
+                time_shift: 5
+            -
+                event: update
+                queued: true
+                time_shift: 5
+                field: status
+            -
+                event: update
+                queued: true
+                time_shift: 5
+                field: dueDate
+            -
+                cron: '0 * * * *'
