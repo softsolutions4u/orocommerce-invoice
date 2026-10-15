@@ -2,7 +2,7 @@
     "name": "softsolutions4u/orocommerce-invoice",
     "description": "Invoice management for OroCommerce Community Edition (CE) 7.0.3: create invoices from orders, PDF invoices, email notifications, bank-transfer details and storefront invoice payments.",
     "type": "symfony-bundle",
-    "license": "GPL-3.0-only",
+    "license": "OSL-3.0",
     "keywords": [
         "oro",
         "orocommerce",
