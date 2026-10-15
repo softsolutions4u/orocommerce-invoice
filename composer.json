@@ -1,6 +1,6 @@
 {
     "name": "softsolutions4u/orocommerce-invoice",
-    "description": "Invoice management for OroCommerce 7.0: create invoices from orders, PDF invoices, email notifications, bank-transfer details and storefront invoice payments.",
+    "description": "Invoice management for OroCommerce Community Edition (CE) 7.0.3: create invoices from orders, PDF invoices, email notifications, bank-transfer details and storefront invoice payments.",
     "type": "symfony-bundle",
     "license": "GPL-3.0-only",
     "keywords": [
@@ -21,7 +21,7 @@
         },
         {
             "name": "Ganesh",
-            "role": "Tester"
+            "role": "QA"
         },
         {
             "name": "SoftSolutions4U",
@@ -37,7 +37,7 @@
         "php": "~8.5.0",
         "brick/math": "^0.11",
         "dompdf/dompdf": "^3.0",
-        "oro/commerce": "7.0.*"
+        "oro/commerce": "7.0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~9.6.0",
