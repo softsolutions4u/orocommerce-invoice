@@ -1,6 +1,6 @@
 # OroCommerce Invoice
 
-**Invoice management for OroCommerce 7.0 by [SoftSolutions4U](https://www.softsolutions4u.com/).**
+**OroCommerce CE Invoice Bundle — An invoice management extension for OroCommerce Community Edition (CE) 7.0.3 by [SoftSolutions4U](https://www.softsolutions4u.com/).**
 
 Create invoices from orders, send them to customers as PDF invoices, track payments, and let customers view and pay their invoices in the storefront. The package is a single self-contained bundle. It does not modify or override any OroCommerce core files or templates.
 
@@ -8,7 +8,7 @@ Create invoices from orders, send them to customers as PDF invoices, track payme
 | --- | --- |
 | Package | `softsolutions4u/orocommerce-invoice` |
 | Bundle | `SoftSolutions4U\Bundle\InvoiceBundle\SoftSolutions4UInvoiceBundle` |
-| License | [GPL-3.0-only](LICENSE) |
+| License | [OSL-3.0](LICENSE) |
 
 ## Features
 
@@ -41,9 +41,9 @@ Create invoices from orders, send them to customers as PDF invoices, track payme
 
 | Component | Version |
 | --- | --- |
-| OroCommerce (Community or Enterprise Edition) | 7.0.x |
+| OroCommerce Community Edition (CE) | 7.0.3 |
 | PHP | 8.5 |
-| Symfony | 7.4 (provided by OroCommerce) |
+| Symfony | 7.4  |
 
 ## Installation
 
@@ -227,6 +227,9 @@ phpcs --standard=vendor/softsolutions4u/orocommerce-invoice/phpcs.xml
 
 ![Storefront invoice details](docs/images/Invoices.png)
 
+**Generated PDF**
+![Storefront invoice details](docs/images/oro_invoice_pdf.png)
+
 **Invoice payment**
 
 ![Storefront invoice payment](docs/images/Pay-Now.png)
@@ -236,16 +239,21 @@ phpcs --standard=vendor/softsolutions4u/orocommerce-invoice/phpcs.xml
 Developed and maintained by **[SoftSolutions4U](https://www.softsolutions4u.com/)**:
 
 - Pradeep Elayaraja (Developer)
-- Ganesh (Tester)
+- Ganesh (QA)
 
 ## License
 
-Copyright © 2026 SoftSolutions4U. Released under the [GNU General Public License v3.0 only](LICENSE).
+Copyright © 2026 SoftSolutions4U. Released under the [Open Software License v. 3.0 (OSL-3.0)](LICENSE).
 
 OroCommerce is a trademark of Oro, Inc. This package is an independent extension and is not affiliated with Oro, Inc.
 
 ## Support
 
-- Issues: <https://github.com/SoftSolutions4U/orocommerce-invoice/issues>
+- Bug reports and feature requests: <https://github.com/SoftSolutions4U/orocommerce-invoice/issues>
 - Commercial support and custom OroCommerce development: <https://www.softsolutions4u.com/>
+- Installation assistance, invoice workflow customization, and OroCommerce
+integration services.
 - Contact us: <info@softsolutions4u.com>
+- The extension is available free of charge under the license specified in
+this repository. Commercial support and custom development services are
+available separately.
