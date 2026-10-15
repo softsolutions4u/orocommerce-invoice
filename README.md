@@ -249,7 +249,7 @@ OroCommerce is a trademark of Oro, Inc. This package is an independent extension
 
 ## Support
 
-- Bug reports and feature requests: *[Open an issue on GitHub](ttps://github.com/SoftSolutions4U/orocommerce-invoice/issues)* to report bugs, suggest improvements, or request features.
+- Bug reports and feature requests: *[Open an issue on GitHub](https://github.com/SoftSolutions4U/orocommerce-invoice/issues)* to report bugs, suggest improvements, or request features.
 - Commercial support and custom OroCommerce development: [SoftSolutions4U](https://www.softsolutions4u.com/) provides professional assistance for businesses using OroCommerce, including installation and configuration, invoice workflow customization, B2B eCommerce development, and ERP or third-party integrations.
 - Contact us: <info@softsolutions4u.com>
 
