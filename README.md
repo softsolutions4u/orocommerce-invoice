@@ -256,7 +256,3 @@ OroCommerce is a trademark of Oro, Inc. This package is an independent extension
 The extension is available free of charge under the license specified in
 this repository. Commercial support and custom development services are
 available separately.
-
-- The extension is available free of charge under the license specified in
-this repository. Commercial support and custom development services are
-available separately.
